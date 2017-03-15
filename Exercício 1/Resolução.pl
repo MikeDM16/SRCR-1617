@@ -182,6 +182,60 @@ procuraUtentes( [H|T], L ) :- findall((H,N), utente(H,N,_,_), Temp),
                               tiraRepetidos(Temp3, L).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado listaAtosMed que lista os atos medicos por 
+% uma utente/ Instituição /cidade
+% Opcao, Parametro, Lista -> {V,F}
+
+listaAtosMed( utente, IDU, L) :- findall(ato(D,IDU,IDC,C), ato(D,IDU,IDC,C), Temp),
+                                 tiraRepetidos(Temp, L).
+
+listaAtosMed( cuid, IDC, L) :- findall(ato(D,IDU,IDC,C), ato(D,IDU,IDC,C), Temp),
+                               tiraRepetidos(Temp, L).
+
+listaAtosMed( inst, I, L) :-  procuraCui(inst, I,Temp),
+                              listarAtos(Temp, L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado listarAtos
+% ids servicos, Lista -> {V,F}
+
+listarAtos( [ID], L) :- findall(ato(X,Y,ID,Z), ato(X,Y,ID,Z), L).
+
+listarAtos( [ID|T], L ) :- findall(ato(X,Y,ID,Z), ato(X,Y,ID,Z), Temp),
+                           listarAtos(T,Temp2),
+                           concat(Temp,Temp2, Temp3),
+                           tiraRepetidos(Temp3,L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado histUtente
+% Tipo, id Utente, Lista -> {V,F}
+
+histUtente( inst, ID, L) :- atosCuidados(ID, Temp),
+                            cuidadosInst(Temp, L).
+
+histUtente( cuid, ID, L) :- findall(IDC, ato(_,ID, IDC,_), Temp),
+                            tiraRepetidos(Temp, L).                
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado atosCuidados que devolve a lista com os cuidados de
+%um utente, a partir do seu id. 
+% id Utente, Lista -> {V,F}
+
+atosCuidados(ID, L) :- findall(IDC, ato(_,ID, IDC,_), Temp),
+                       tiraRepetidos( Temp, L).
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado cuidadosInst que devolve a lista com as instituicoes
+% de uma lista de cuidados. 
+% Lista ids cuidado, Lista -> {V,F}
+
+cuidadosInst([IDC], L) :- findall(I, cuidado(IDC,_,I,_), L).
+
+cuidadosInst([IDC|T], L) :- findall(I, cuidado(IDC,_,I,_), Temp),
+                            cuidadosInst(T,Temp2),
+                            concat(Temp, Temp2, Temp3),
+                            tiraRepetidos(Temp3, L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado concat, que junta duas listas
 % Lista1, Lista2, R -> {V,F}
 
