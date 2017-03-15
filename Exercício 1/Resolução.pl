@@ -18,21 +18,27 @@
 :- op( 900,xfy,'::' ).
 :- dynamic cliente/4.
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado cliente: IdUt, Nome, Idade, Morada -> {V,F,D}
+%                       cliente: IdUt -> {V,F,D}
 
 cliente(1,diogo,20,braga).
+cliente(Id) :- cliente(Id,N,I,M).
 
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+cliente(ID,N,I,M) :: (solucoes(ID, (cliente(ID, N, I, M)), S),
++cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID, N, I, M), S),
+                       comprimento(S, L), 
+                       L == 1).
++cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID), S),
                        comprimento(S, L), 
                        L == 1).
 
 % Invariante Estrutural: garantir a remoção de conhecimento
 
--cliente(ID,N,I,M) :: (solucoes(ID, (cliente(ID, N, I, M)), S),
+-cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID, N, I, M), S),
                        comprimento(S, L), 
                        L == 0).
 
@@ -49,7 +55,7 @@ cliente(1,diogo,20,braga).
 
 % Invariante Estrutural: garantir a remoção de conhecimento
 
--cuidado(ID,D,I,C) :: (solucoes(ID, (cuidado(ID, D, I, C)), S),
+-cuidado(ID,D,I,C) :: (solucoes(ID, cuidado(ID, D, I, C), S),
                        comprimento(S, L), 
                        L == 0).
 
@@ -60,13 +66,13 @@ cliente(1,diogo,20,braga).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+ato(D,IDU,IDS,C) :: (solucoes(ID, (cuidado(ID, D, I, C)), S),
++ato(D,IDU,IDS,C) :: (solucoes(ID, cuidado(ID, D, I, C), S),
                       comprimento(S, L), 
                       L == 1).
 
 % Invariante Estrutural: garantir a remoção de conhecimento
 
--ato(D,IDU,IDS,C) :: (solucoes(ID, (cuidado(ID, D, I, C)), S),
+-ato(D,IDU,IDS,C) :: (solucoes(ID, cuidado(ID, D, I, C), S),
                       comprimento(S, L), 
                       L == 0).
 
