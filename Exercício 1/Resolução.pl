@@ -127,7 +127,7 @@ ato( 15-03-2017,2,5,0 ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Identificar os utentes por critérios de seleção;
+% Identificar os utentes por critérios de seleção;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado pesquisaUtentes: 
@@ -149,7 +149,7 @@ pesquisaUtentes( morada,P,L ) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Identificar as instituições prestadoras de cuidados de saúde;
+% Identificar as instituições prestadoras de cuidados de saúde;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado listaInst: Lista -> {V,F}
@@ -164,7 +164,7 @@ listaInst( S ) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Identificar os cuidados prestados por instituição/cidade;
+% Identificar os cuidados prestados por instituição/cidade;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado listaCui: Opcao, Parametro, Lista -> {V,F}
@@ -180,7 +180,7 @@ listaCui( inst, I, L) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Identificar os utentes de uma instituição/servico
+% Identificar os utentes de uma instituição/servico
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado listaUtentes: Opcao, Parametro, Lista -> {V,F}
@@ -241,7 +241,7 @@ procuraUtentes( [H|T],L ) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Identificar os atos médicos realizados, por utente/instituição/serviço;
+% Identificar os atos médicos realizados, por utente/instituição/serviço;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado listaAtosMed: Opcao, Parametro, Lista -> {V,F}
@@ -276,7 +276,7 @@ listarAtos( [ID|T],L ) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-Determinar todas as instituições/serviços a que um utente já recorreu;
+% Determinar todas as instituições/serviços a que um utente já recorreu;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado histUtente: Tipo, id Utente, Lista -> {V,F}
