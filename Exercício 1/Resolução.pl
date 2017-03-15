@@ -33,9 +33,14 @@ instituicao( viana ).
 cuidado(1,morreu, hpbraga, braga).
 cuidado(2,partiu, hsjoao, porto).
 cuidado(3,nascimento, hpbraga, braga).
+cuidado(4,febre, viana, viana).
+cuidado(5, dar-sangue, hpbraga, braga).
 
 ato(01-02-1996, 3,3,10).
 ato(15-03-2017, 1,2,15).
+ato(14-03-2014, 4,4,5).
+ato(15-03-2017, 1,5,0).
+ato(15-03-2017, 2,5,0).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt, Nome, Idade, Morada -> {V,F}
@@ -109,22 +114,104 @@ ato(15-03-2017, 1,2,15).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listaUtentes
+% Extensao do predicado pesquisaUtentes
 % Opcao, Parametro, Lista -> {V,F}
 
-listaUtentes( id,P,L ) :- findall(utente(P,X,Y,Z), utente(P,X,Y,Z), L).
-listaUtentes( nome,P,L ) :- findall(utente(X,P,Y,Z), utente(X,P,Y,Z), L).
-listaUtentes( idade,P,L ) :- findall(utente(X,Y,P,Z), utente(X,Y,P,Z), L).
-listaUtentes( morada,P,L ) :- findall(utente(X,Y,Z,P), utente(X,Y,Z,P), L).
+pesquisaUtentes( id,P,L ) :- findall(utente(P,X,Y,Z), utente(P,X,Y,Z), L).
+pesquisaUtentes( nome,P,L ) :- findall(utente(X,P,Y,Z), utente(X,P,Y,Z), L).
+pesquisaUtentes( idade,P,L ) :- findall(utente(X,Y,P,Z), utente(X,Y,P,Z), L).
+pesquisaUtentes( morada,P,L ) :- findall(utente(X,Y,Z,P), utente(X,Y,Z,P), L).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado listaInst
 % Lista -> {V,F}
 
-listaInst(L) :- findall(N, cuidado(_,_,N,_), L).
+listaInst(S) :- findall(N, cuidado(_,_,N,_), L),
+                tiraRepetidos( L, S ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado listaCui
+% Opcao, Parametro, Lista -> {V,F}
+
+listaCui( cidade, C, L) :- findall(cuidado(X,Y,Z,C), cuidado(X,Y,Z,C), L).
+listaCui( inst, I, L) :- findall(cuidado(X,Y,I,Z), cuidado(X,Y,I,Z), L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado listaUtentes que lista os utentes por 
+% uma Instituição/cidade
+% Opcao, Parametro, Lista -> {V,F}
+
+listaUtentes( inst, I, L) :- procuraCui( inst, I, Temp),
+                             procuraAtos(Temp, Temp2),
+                             procuraUtentes(Temp2, L).
+
+listaUtentes( cuid, C, L) :- procuraCui(cuid, C, Temp),
+                             procuraAtos(Temp, Temp2),
+                             procuraUtentes(Temp2, L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado procuraCui que devolde uma lista com os
+% ids dos cuidados, procurando pela Descrição do cuidado ou a Instituição
+% do servico. 
+% Tipo, Parametro, Lista -> {V,F}
+
+procuraCui( inst, I, L) :- findall(X, cuidado(X,_,I,_), Temp),
+                      tiraRepetidos(Temp, L).
+
+procuraCui( cuid, D, L) :- findall(X, cuidado(X,D,_,_), Temp),
+                      tiraRepetidos(Temp, L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado procuraAtos
+% Lista servicos, Lista -> {V,F}
+
+procuraAtos( [X], L) :- findall(U, ato(_,U,X,_), L).
+
+procuraAtos( [H|T], L ) :- findall(U, ato(_,U,H,_), Temp),
+                           procuraAtos(T,Temp2),
+                           concat(Temp,Temp2, Temp3),
+                           tiraRepetidos(Temp3,L).
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado procuraUtentes
+% Lista de ids de utentes, Lista -> {V,F}
+
+procuraUtentes( [X], L) :- findall((X,N), utente(X,N,_,_), L).
+
+procuraUtentes( [H|T], L ) :- findall((H,N), utente(H,N,_,_), Temp),
+                              procuraUtentes(T,Temp2),
+                              concat(Temp,Temp2, Temp3),
+                              tiraRepetidos(Temp3, L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado concat, que junta duas listas
+% Lista1, Lista2, R -> {V,F}
+
+concat([],L,L).
+concat([X|Xs], L2, [X|L]) :- concat(Xs,L2,L).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+
 % Extensao do predicado que remove os repetidos de uma lista
 %Lista -> {V,F}
+
+tiraRepetidos([],[]).
+tiraRepetidos([H|T], [H|R]) :- nao( pertence(H,T)), 
+                               tiraRepetidos(T,R).
+tiraRepetidos([H|T], [R]) :-   pertence(H,T), 
+                               tiraRepetidos(T,R).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do meta-predicado nao
+% Questao  -> {V,F}
+
+nao( Questao ) :- Questao, !, fail.
+nao( Questao ).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado que determina se um elemnto pertence a uma lista
+%Elem, Lista -> {V,F}
+
+pertence(X, [X|T]).
+pertence(X, [H|T]) :- pertence(X,T).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado solucoes
