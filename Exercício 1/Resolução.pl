@@ -20,8 +20,8 @@
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado cliente: IdUt, Nome, Idade, Morada -> {V,F,D}
-%                       cliente: IdUt -> {V,F,D}
+% Extensao do predicado cliente: IdUt, Nome, Idade, Morada -> {V,F}
+%                       cliente: IdUt -> {V,F}
 
 cliente(1,diogo,20,braga).
 cliente(Id) :- cliente(Id,N,I,M).
@@ -29,22 +29,19 @@ cliente(Id) :- cliente(Id,N,I,M).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID, N, I, M), S),
-                       comprimento(S, L), 
-                       L == 1).
-+cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID), S),
-                       comprimento(S, L), 
-                       L == 1).
++cliente(ID, N, I, M) :: (solucoes(ID, cliente(ID, NN, II, MM), S),
+                          comprimento(S, L), 
+                          L == 1).
 
 % Invariante Estrutural: garantir a remoção de conhecimento
 
--cliente(ID,N,I,M) :: (solucoes(ID, cliente(ID, N, I, M), S),
-                       comprimento(S, L), 
-                       L == 0).
+-cliente(ID, N, I, M) :: (solucoes(ID, cliente(ID, NN, II, MM), S),
+                          comprimento(S, L), 
+                          L == 0).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado cuidado prestado: 
-% IdServ, Descrição, Instituição, Cidade -> {V,F,D}
+% IdServ, Descrição, Instituição, Cidade -> {V,F}
 
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
@@ -61,7 +58,7 @@ cliente(Id) :- cliente(Id,N,I,M).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado ato medico: 
-% Data, IdUtente, IdServico, Custo -> {V,F,D}
+% Data, IdUtente, IdServico, Custo -> {V,F}
 
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
