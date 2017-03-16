@@ -40,11 +40,23 @@ cuidado( 3,nascimento,hpbraga,braga ).
 cuidado( 4,febre,viana,viana ).
 cuidado( 5,dar-sangue,hpbraga,braga ).
 
-ato( 01-02-1996 , 3,3,10 ).
-ato( 15-03-2017, 1,2,15 ).
-ato( 17-04-1997, 4,4,5 ).
-ato( 15-03-2007, 1,5,0 ).
-ato( 15-03-2007, 2,5,0 ).
+ato( data( 1,2,1996 ),3,3,10 ).
+ato( data( 15,3,2017 ),1,2,15 ).
+ato( data( 17,4,1997 ),4,4,5 ).
+ato( data( 15,3,2007 ),1,5,0 ).
+ato( data( 15,3,2007 ),2,5,0 ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao dos predicados dia, mes e ano: Data, Dia/Mes/Ano -> {V,F}
+
+dia( data( D,M,A ),D ).
+mes( data( D,M,A ),M ).
+ano( data( D,M,A ),A ).
+
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -53,15 +65,17 @@ ato( 15-03-2007, 2,5,0 ).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+utente(ID, N, I, M) :: (solucoes(ID, utente(ID, _, _, _), S),
-                          comprimento(S, L), 
-                          L == 1).
++utente( ID,N,I,M ) :: ( solucoes( ID, utente( ID,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
 
-% Invariante Estrutural: garantir a remoção de conhecimento
 
--utente(ID, N, I, M) :: (solucoes(ID, utente(ID, _, _, _), S),
-                          comprimento(S, L), 
-                          L == 0).
+% Invariante Referencial: garantir a consistênica de conhecimento
+
+% O Utente removido não pode ter atos associados
+-utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,ID,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 0 ).
 
 
 
@@ -73,17 +87,17 @@ ato( 15-03-2007, 2,5,0 ).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+cuidado( ID,D,I,C ) :: (solucoes(ID, (cuidado(ID, _, _, _)), S),
-                       comprimento(S, L), 
-                       instituicao( I ),
-                       L == 1).
++cuidado( ID,D,I,C ) :: ( solucoes( ID,cuidado( ID,_,_,_ ),S ),
+                          comprimento(S, L), 
+                          instituicao( I ),
+                          L == 1 ).
 
-% Invariante Estrutural: garantir a remoção de conhecimento
+% Invariante Referencial: garantir a consistênica de conhecimento
 
--cuidado(ID,D,I,C) :: (solucoes(ID, cuidado(ID, _, _, _), S),
-                       comprimento(S, L),
-                       instituicao( I ), 
-                       L == 0).
+% O Cuidado removido não pode ter atos medicos associados
+-cuidado( ID,D,I,C ) :: ( solucoes( ID,ato( _,_,ID,_ ),S ),
+                          comprimento( S,L ),
+                          L == 0 ).
 
 
 
@@ -92,13 +106,18 @@ ato( 15-03-2007, 2,5,0 ).
 % Extensao do predicado Instituição: 
 % Nome -> {V,F}
 
-+instituicao( Nome ) :: (solucoes(ID, instituicao(Nome), S),
-                         comprimento(S, L), 
-                         L == 1).
+% Invariante Estrutural: nao permitir a insercao de conhecimento
+%                        repetido
 
--instituicao( Nome ) :: (solucoes(ID, instituicao(Nome), S),
-                         comprimento(S, L), 
-                         L == 0).
++instituicao( Nome ) :: ( solucoes( ID,instituicao( Nome ),S ),
+                          comprimento( S,L ), 
+                          L == 1 ).
+
+% Invariante Referencial: garantir a consistênica de conhecimento
+
+-instituicao( Nome ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
+                          comprimento( S,L ), 
+                          L == 0 ).
 
 
 
@@ -110,25 +129,19 @@ ato( 15-03-2007, 2,5,0 ).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+ato(D,IDU,IDS,C) :: (solucoes(IDU, utente(IDU,_,_,_), S),
-                      comprimento(S, L), 
-                      L == 1).	
++ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).	
 
-+ato(D,IDU,IDS,C) :: (solucoes(IDS, cuidado(IDS,_,_,_), S),
-                      comprimento(S, L), 
-                      L == 1).	
-
-% Invariante Estrutural: garantir a remoção de conhecimento
-
--ato(D,IDU,IDS,C) :: (solucoes(ID, cuidado(ID, _, _, _), S),
-                      comprimento(S, L), 
-                      L == 0).
++ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).	
 
 
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar os utentes por critérios de seleção;
+% Identificar os utentes por critérios de seleção;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado pesquisaUtentes: 
@@ -314,13 +327,14 @@ cuidadosInst( [IDC|T],L ) :-
 
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Calcular o custo total dos atos médicos por 
+% Calcular o custo total dos atos medicos por 
 % utente/serviço/instituição/data;
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custo: Tipo,Parametro,Retorno -> {V,F}
-% Parametro : IDutente, IDcuidado, Instituicao, Data
+% Parametro : IDutente, IDcuidado, Instituicao, Data, Mes, Ano, Mes&Ano
 
 custo(u,IDU,R) :- findall(C,ato(_,IDU,_,C),L),
 				  somatorio(L,R).
@@ -333,6 +347,19 @@ custo(inst,I,R) :- findall(X,cuidado(X,_,I,_),L),
 
 custo(d,Data,R) :- findall(C,ato(Data,_,_,C),L),
 				   somatorio(L,R).
+
+custo( m,Mes,R ) :-
+    findall( C,(ato( D,_,_,C ), mes( D, Mes ) ),L ),
+    somatorio( L,R ).
+
+custo( a,Ano,R ) :-
+    findall( C,(ato( D,_,_,C ), ano( D, Ano ) ),L ),
+    somatorio( L,R ).
+
+custo( ma,Mes,Ano,R ) :-
+    findall( C,(ato( D,_,_,C ), mes( D, Mes ) , ano( D,Ano ) ),L ),
+    somatorio( L,R ).
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custoInst: ListaIdsServ, Custo -> {V,F}
@@ -350,7 +377,12 @@ custoInstituicao( [IDC|T],R ) :-
 
 
 
-%----------------------- Funções Auxiliares------------------------
+%------------------------ Funcionalidades Extra -------------------------
+
+
+
+
+%------------------------ Predicados Auxiliares -------------------------
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado concat: Lista1, Lista2, R -> {V,F}
