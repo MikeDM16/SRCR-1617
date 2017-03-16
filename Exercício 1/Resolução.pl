@@ -21,6 +21,8 @@
 :- dynamic cuidado/4.
 
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Dados da base de conhecimento
 utente( 1,diogo,21,braga ).
@@ -33,18 +35,18 @@ utente( 6, lisandra,25, fafe).
 instituicao( hpbraga ).
 instituicao( hsjoao ).
 instituicao( hviana ).
-instituicao( hporto).
-instituicao( hfaro).
+instituicao( hporto ).
+instituicao( hfaro ).
 
 cuidado( 1,analises,hpbraga,braga ).
 cuidado( 2,tac,hsjoao,porto ).
 cuidado( 3,nascimento,hpbraga,braga ).
 cuidado( 4,febre,hviana,hviana ).
 cuidado( 5,dar-sangue,hpbraga,braga ).
-cuidado( 6,raioX,hporto,porto).
-cuidado( 7,consulta,hporto,porto).
-cuidado( 8,nascimento,hfaro,faro).
-cuidado( 9,ecografia,hfaro,faro).
+cuidado( 6,raioX,hporto,porto ).
+cuidado( 7,consulta,hporto,porto ).
+cuidado( 8,nascimento,hfaro,faro ).
+cuidado( 9,ecografia,hfaro,faro ).
 
 ato( data( 1,2,1996 ),3,3,10 ).
 ato( data( 15,3,2017 ),1,2,15 ).
@@ -53,7 +55,7 @@ ato( data( 15,3,2007 ),1,5,0 ).
 ato( data( 15,3,2007 ),2,5,0 ).
 ato( data( 15,3,2007 ),3,2,0 ).
 ato( data( 16,3,2017 ),5,6,12 ).
-ato( data( 16,3,2007 ),6,9, 20).
+ato( data( 16,3,2007 ),6,9,20 ).
 
 
 
@@ -141,7 +143,6 @@ ano( data( D,M,A ),A ).
 +ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
                          comprimento( S,L ), 
                          L == 1 ).	
-
 +ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
                          comprimento( S,L ), 
                          L == 1 ).	
@@ -158,13 +159,10 @@ ano( data( D,M,A ),A ).
 
 pesquisaUtentes( id,P,L ) :-
     findall( utente( P,X,Y,Z ),utente( P,X,Y,Z ),L ).
-
 pesquisaUtentes( nome,P,L ) :-
     findall( utente(X,P,Y,Z ),utente( X,P,Y,Z ),L ).
-
 pesquisaUtentes( idade,P,L ) :-
     findall( utente(X,Y,P,Z ),utente( X,Y,P,Z ),L ).
-
 pesquisaUtentes( morada,P,L ) :-
     findall( utente(X,Y,Z,P ),utente( X,Y,Z,P ),L ).
 
@@ -195,7 +193,6 @@ listaInst( S ) :-
 
 listaCui( cidade, C, L) :-
     findall( cuidado( X,Y,Z,C ),cuidado( X,Y,Z,C ),L).
-
 listaCui( inst, I, L) :-
     findall( cuidado( X,Y,I,Z ),cuidado( X,Y,I,Z ),L).
 
@@ -215,7 +212,6 @@ listaUtentes( inst,I,L ) :-
     procuraCui( inst,I,Temp ),
     procuraAtos( Temp,Temp2 ),
     procuraUtentes( Temp2,L ).
-
 listaUtentes( cuid,C,L ) :- 
     procuraCui( cuid,C,Temp ),
     procuraAtos( Temp,Temp2 ),
@@ -229,7 +225,6 @@ listaUtentes( cuid,C,L ) :-
 procuraCui( inst,I,L ) :-
     findall( X,cuidado( X,_,I,_ ),Temp ),
     tiraRepetidos( Temp,L ).
-
 procuraCui( cuid,D,L ) :-
     findall( X,cuidado( X,D,_,_ ),Temp ),
     tiraRepetidos( Temp,L ).
@@ -240,7 +235,6 @@ procuraCui( cuid,D,L ) :-
 
 procuraAtos( [X],L ) :-
     findall( U,ato( _,U,X,_ ),L ).
-
 procuraAtos( [H|T],L ) :-
     findall( U, ato( _,U,H,_ ),Temp ),
     procuraAtos( T,Temp2 ),
@@ -253,7 +247,6 @@ procuraAtos( [H|T],L ) :-
 
 procuraUtentes( [X],L ) :-
     findall( ( X,N ),utente( X,N,_,_ ),L ).
-
 procuraUtentes( [H|T],L ) :-
     findall( ( H,N ),utente( H,N,_,_ ),Temp ),
     procuraUtentes( T,Temp2 ),
@@ -273,11 +266,9 @@ procuraUtentes( [H|T],L ) :-
 listaAtosMed( utente,IDU,L ) :-
     findall( ato( D,IDU,IDC,C ),ato( D,IDU,IDC,C ),Temp ),
     tiraRepetidos( Temp,L ).
-
 listaAtosMed( cuid,IDC,L ) :-
     findall( ato( D,IDU,IDC,C ),ato( D,IDU,IDC,C ),Temp ),
     tiraRepetidos( Temp,L ).
-
 listaAtosMed( inst,I,L ) :-
     procuraCui( inst,I,Temp ),
     listarAtos( Temp,L ).
@@ -288,7 +279,6 @@ listaAtosMed( inst,I,L ) :-
 
 listarAtos( [ID],L ) :-
     findall( ato( X,Y,ID,Z ),ato( X,Y,ID,Z ),L ).
-
 listarAtos( [ID|T],L ) :-
     findall( ato( X,Y,ID,Z ),ato( X,Y,ID,Z ),Temp ),
     listarAtos( T,Temp2 ),
@@ -308,7 +298,6 @@ listarAtos( [ID|T],L ) :-
 histUtente( inst,ID,L ) :-
     atosCuidados( ID,Temp ),
     cuidadosInst( Temp,L ).
-
 histUtente( cuid,ID,L) :-
     findall( IDS,ato( _,ID,IDS,_ ),Temp ),
     tiraRepetidos( Temp,L ).                
@@ -345,30 +334,27 @@ cuidadosInst( [IDC|T],L ) :-
 % Extensao do predicado custo: Tipo,Parametro,Retorno -> {V,F}
 % Parametro : IDutente, IDcuidado, Instituicao, Data, Mes, Ano, Mes&Ano
 
-custo(u,IDU,R) :- findall(C,ato(_,IDU,_,C),L),
-				  somatorio(L,R).
-
-custo(c,IDC,R) :- findall(C,ato(_,_,IDC,C),L),
-				  somatorio(L,R).
-
-custo(inst,I,R) :- findall(X,cuidado(X,_,I,_),L),
-				   custoInstituicao(L,R).
-
-custo(d,Data,R) :- findall(C,ato(Data,_,_,C),L),
-				   somatorio(L,R).
-
+custo(u,IDU,R) :- 
+    findall( C,ato( _,IDU,_,C ),L ),
+	somatorio( L,R ).
+custo(c,IDC,R) :-
+    findall( C,ato( _,_,IDC,C ),L ),
+	somatorio( L,R ).
+custo( inst,I,R ) :- 
+    findall( X,cuidado( X,_,I,_ ),L ),
+    custoInstituicao(L,R).
+custo( d,Data,R ) :-
+    findall( C,ato( Data,_,_,C ),L ),
+	somatorio( L,R ).
 custo( m,Mes,R ) :-
     findall( C,(ato( D,_,_,C ), mes( D, Mes ) ),L ),
     somatorio( L,R ).
-
 custo( a,Ano,R ) :-
     findall( C,(ato( D,_,_,C ), ano( D, Ano ) ),L ),
     somatorio( L,R ).
-
 custo( ma,Mes,Ano,R ) :-
     findall( C,(ato( D,_,_,C ), mes( D, Mes ) , ano( D,Ano ) ),L ),
     somatorio( L,R ).
-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custoInst: ListaIdsServ, Custo -> {V,F}
@@ -392,7 +378,8 @@ custoInstituicao( [IDC|T],R ) :-
 % Extensao do predicado instituicoesServico: Serviço, Lista -> {V,F}
 % Lista é a lista das instituições que disponibilizam um serviço
 
-instituicoesServico( S,L ) :- findall( I,cuidado(_,S,I,_),L ).
+instituicoesServico( S,L ) :-
+    findall( I,cuidado(_,S,I,_),L ).
 
 
 
@@ -401,11 +388,11 @@ instituicoesServico( S,L ) :- findall( I,cuidado(_,S,I,_),L ).
 % Extensao do predicado servicoMaisUsado:
 % Ano, (Serviço, NOcorrencias) -> {V,F}
 
-servicoMaisUsado( A,(Desc,N) ) :- findall( ( ID,NA ),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
-                                  tuploMaximo( L,(IDS,N) ),
-                                  findall( Descricao, cuidado(IDS,Descricao,_,_),Temp),
-                                  ultimo(Temp,Desc).
-
+servicoMaisUsado( A,(Desc,N) ) :- 
+    findall( ( ID,NA ),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
+    tuploMaximo( L,(IDS,N) ),
+    findall( Descricao, cuidado( IDS,Descricao,_,_ ),Temp ),
+    ultimo( Temp,Desc ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado quantos: Ano, IdServ, Numero -> {V,F}
@@ -413,16 +400,6 @@ servicoMaisUsado( A,(Desc,N) ) :- findall( ( ID,NA ),( ato( D,_,ID,_ ),ano( D,A 
 
 quantos( A,ID,NA ) :- findall( ID, ( ato( D,_,ID,_ ),ano( D,A ) ),L ),
                       comprimento( L,NA ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado maximo: Lista, Resultado -> {V,F}
-% Resultado é o maximo da lista de tuplos
-
-tuploMaximo( [(X,Y)], (X,Y) ).
-tuploMaximo( [(X,Y)|T], (X,Y)) :- tuploMaximo(T, (XX,YY)),
-                                  Y > YY.
-tuploMaximo( [(X,Y)|T], (XX,YY)) :- tuploMaximo(T, (XX,YY)),
-                                    Y =< YY.
 
 
 
@@ -433,7 +410,6 @@ tuploMaximo( [(X,Y)|T], (XX,YY)) :- tuploMaximo(T, (XX,YY)),
 % Extensao do predicado concat: Lista1, Lista2, R -> {V,F}
 
 concat( [],L,L ).
-
 concat( [X|Xs],L2,[X|L] ) :-
     concat( Xs,L2,L ).
 
@@ -444,11 +420,9 @@ concat( [X|Xs],L2,[X|L] ) :-
 % Extensao do predicado tiraRepetidos: Lista, Resultado -> {V,F}
 
 tiraRepetidos( [],[] ).
-
 tiraRepetidos( [H|T],[H|R] ) :-
     nao( pertence( H,T ) ), 
     tiraRepetidos( T,R ).
-
 tiraRepetidos( [H|T],[R] ) :-
     pertence( H,T ), 
     tiraRepetidos( T,R ).
@@ -472,7 +446,6 @@ nao( Questao ).
 % Extensao do predicado pertence: Elem, Lista -> {V,F}
 
 pertence( X,[X|T] ).
-
 pertence( X,[H|T] ) :-
     pertence( X,T ).
 
@@ -514,7 +487,6 @@ evolucao( Termo ) :-
 
 insercao( Termo ) :- 
     assert( Termo ).
-
 insercao( Termo ) :- 
     retract( Termo ),
     !, fail.
@@ -539,7 +511,6 @@ involucao( Termo ) :-
 
 remocao( Termo ) :-
     retract( Termo ).
-
 remocao( Termo ) :-
     assert( Termo ),
     !, fail.
@@ -547,11 +518,10 @@ remocao( Termo ) :-
 
 
 
-%--------------------------------------------------------------------
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que testa uma lista de termos
 
 testa( [] ).
-
 testa( [H|T] ) :-
     H,
     testa(T).
@@ -559,15 +529,33 @@ testa( [H|T] ) :-
 
 
 
-%--------------------------------------------------------------------
-% Extensão do predicado que calcule a soma de um conjunto de valores
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que calcula a soma de um conjunto de valores
 
 somatorio([],0).
 somatorio([X|Y],N):- somatorio(Y,R), N is R+X. 
 
-%--------------------------------------------------------------------
-% Extensão do predicado que calcule a soma de um conjunto de valores
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que calcula o último elemento de uma lista
 
 ultimo([X|Xs], Last) :-  lastAux(Xs, X, Last).
 lastAux([], Last, Last).
 lastAux([X|Xs], _, Last) :- lastAux(Xs, X, Last).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado maximo: Lista, Resultado -> {V,F}
+% Resultado é o maximo da lista de tuplos
+
+tuploMaximo( [(X,Y)], (X,Y) ).
+tuploMaximo( [(X,Y)|T], (X,Y)) :- 
+    tuploMaximo(T, (XX,YY)),
+    Y > YY.
+tuploMaximo( [(X,Y)|T], (XX,YY)) :-
+    tuploMaximo(T, (XX,YY)),
+    Y =< YY.
