@@ -45,6 +45,7 @@ ato( data( 15,3,2017 ),1,2,15 ).
 ato( data( 17,4,1997 ),4,4,5 ).
 ato( data( 15,3,2007 ),1,5,0 ).
 ato( data( 15,3,2007 ),2,5,0 ).
+ato( data( 15,3,2007 ),3,2,0 ).
 
 
 
@@ -379,6 +380,42 @@ custoInstituicao( [IDC|T],R ) :-
 
 %------------------------ Funcionalidades Extra -------------------------
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado instituicoesServico: Serviço, Lista -> {V,F}
+% Lista é a lista das instituições que disponibilizam um serviço
+
+instituicoesServico( S,L ) :- findall( I,cuidado(_,S,I,_),L ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado servicoMaisUsado:
+% Ano, (Serviço, NOcorrencias) -> {V,F}
+
+servicoMaisUsado( A,(Desc,N) ) :- findall( ( ID,NA ),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
+                                  tuploMaximo( L,(IDS,N) ),
+                                  findall( Descricao, cuidado(IDS,Descricao,_,_),Temp),
+                                  ultimo(Temp,Desc).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado quantos: Ano, IdServ, Numero -> {V,F}
+% Número é o número de atos registado no Ano, para o serviço IdServ
+
+quantos( A,ID,NA ) :- findall( ID, ( ato( D,_,ID,_ ),ano( D,A ) ),L ),
+                      comprimento( L,NA ).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado maximo: Lista, Resultado -> {V,F}
+% Resultado é o maximo da lista de tuplos
+
+tuploMaximo( [(X,Y)], (X,Y) ).
+tuploMaximo( [(X,Y)|T], (X,Y)) :- tuploMaximo(T, (XX,YY)),
+                                  Y > YY.
+tuploMaximo( [(X,Y)|T], (XX,YY)) :- tuploMaximo(T, (XX,YY)),
+                                    Y =< YY.
+
 
 
 
@@ -519,3 +556,10 @@ testa( [H|T] ) :-
 
 somatorio([],0).
 somatorio([X|Y],N):- somatorio(Y,R), N is R+X. 
+
+%--------------------------------------------------------------------
+% Extensão do predicado que calcule a soma de um conjunto de valores
+
+ultimo([X|Xs], Last) :-  lastAux(Xs, X, Last).
+lastAux([], Last, Last).
+lastAux([X|Xs], _, Last) :- lastAux(Xs, X, Last).
