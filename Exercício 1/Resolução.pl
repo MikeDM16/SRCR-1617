@@ -56,6 +56,7 @@ ato( data( 15,3,2007 ),2,5,0 ).
 ato( data( 15,3,2007 ),3,2,0 ).
 ato( data( 16,3,2017 ),5,6,12 ).
 ato( data( 16,3,2007 ),6,9,20 ).
+ato( data( 16,3,2007 ),3,1,40 ).
 
 
 
@@ -401,6 +402,15 @@ servicoMaisUsado( A,(Desc,N) ) :-
 quantos( A,ID,NA ) :- findall( ID, ( ato( D,_,ID,_ ),ano( D,A ) ),L ),
                       comprimento( L,NA ).
 
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado datasVisitaInst: NomeUt, Inst, Lista -> {V,F}
+% Lista é a lista das datas em que o utente visitou a instituição
+
+datasVisitaInst( N,I,L ) :-
+    findall( D,( utente( IDU,N,_,_ ),ato( D,IDU,IDS,_ ),cuidado( IDS,_,I,_ ) ),L ).
 
 
 
