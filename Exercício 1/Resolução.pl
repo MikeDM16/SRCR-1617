@@ -16,6 +16,9 @@
 
 :- op( 900,xfy,'::' ).
 :- dynamic utente/4.
+:- dynamic ato/4.
+:- dynamic instituicao/1.
+:- dynamic cuidado/4.
 
 
 
@@ -37,11 +40,11 @@ cuidado( 3,nascimento,hpbraga,braga ).
 cuidado( 4,febre,viana,viana ).
 cuidado( 5,dar-sangue,hpbraga,braga ).
 
-ato( date(1996,2,1) , 3,3,10 ).
-ato( date(2017,3,15), 1,2,15 ).
-ato( date(2014,3,14), 4,4,5 ).
-ato( date(2017,3,15), 1,5,0 ).
-ato( date(2014,3,14), 2,5,0 ).
+ato( 01-02-1996 , 3,3,10 ).
+ato( 15-03-2017, 1,2,15 ).
+ato( 17-04-1997, 4,4,5 ).
+ato( 15-03-2007, 1,5,0 ).
+ato( 15-03-2007, 2,5,0 ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -309,6 +312,12 @@ cuidadosInst( [IDC|T],L ) :-
     concat( Temp,Temp2,Temp3 ),
     tiraRepetidos( Temp3,L ).
 
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Calcular o custo total dos atos médicos por 
+% utente/serviço/instituição/data;
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custo: Tipo,Parametro,Retorno -> {V,F}
 % Parametro : IDutente, IDcuidado, Instituicao, Data
@@ -322,17 +331,23 @@ custo(c,IDC,R) :- findall(C,ato(_,_,IDC,C),L),
 custo(inst,I,R) :- findall(X,cuidado(X,_,I,_),L),
 				   custoInstituicao(L,R).
 
+custo(d,Data,R) :- findall(C,ato(Data,_,_,C),L),
+				   somatorio(L,R).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado custoInst: ListaIdsServ, Custo -> {V,F}
 
-custoInstituicao( [IDC],R ) :- findall(C,ato(_,_,IDC,C),L),
-				  		   	   somatorio(L,R).
+custoInstituicao( [IDC],R ) :-
+	findall( C,ato( _,_,IDC,C ),L ),
+	somatorio( L,R ).
 
-custoInstituicao( [IDC|T],R ) :- findall(C,ato(_,_,IDC,C),L),
-					  		   	 somatorio(L,Temp),
-					  		   	 custoInstituicao(T,Temp2),
-					  		   	 R is Temp + Temp2.
+custoInstituicao( [IDC|T],R ) :-
+	findall( C,ato( _,_,IDC,C ),L ),
+	somatorio( L,Temp ),
+	custoInstituicao( T,Temp2 ),
+ 	R is Temp + Temp2.
+
+
 
 
 %----------------------- Funções Auxiliares------------------------
@@ -435,6 +450,7 @@ insercao( Termo ) :-
 
 involucao( Termo ) :-
     solucoes( INV,-Termo::INV,LINV ),
+    Termo,
     remocao( Termo ),
     testa( LINV ).
 
@@ -454,12 +470,6 @@ remocao( Termo ) :-
 
 
 
-remover(Q) :- findall(I, -Q :: I, L), retirar(Q), testa(L).
-
-retirar(T) :- retract(T).
-
-retirar(T) :- assert(T), !, fail.
-
 %--------------------------------------------------------------------
 % Extensão do predicado que testa uma lista de termos
 
@@ -468,6 +478,9 @@ testa( [] ).
 testa( [H|T] ) :-
     H,
     testa(T).
+
+
+
 
 %--------------------------------------------------------------------
 % Extensão do predicado que calcule a soma de um conjunto de valores
