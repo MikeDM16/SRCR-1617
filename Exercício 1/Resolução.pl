@@ -21,24 +21,30 @@
 :- dynamic cuidado/4.
 
 
-
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Dados da base de conhecimento
 utente( 1,diogo,21,braga ).
 utente( 2,rui,20,braga ).
 utente( 3,esm,21,prado ).
 utente( 4,miguel,22,viana ).
+utente( 5,joao,26,guimaraes).
+utente( 6, lisandra,25, fafe).
 
 instituicao( hpbraga ).
 instituicao( hsjoao ).
-instituicao( viana ).
+instituicao( hviana ).
+instituicao( hporto).
+instituicao( hfaro).
 
-cuidado( 1,morreu,hpbraga,braga ).
-cuidado( 2,partiu,hsjoao,porto ).
+cuidado( 1,analises,hpbraga,braga ).
+cuidado( 2,tac,hsjoao,porto ).
 cuidado( 3,nascimento,hpbraga,braga ).
-cuidado( 4,febre,viana,viana ).
+cuidado( 4,febre,hviana,hviana ).
 cuidado( 5,dar-sangue,hpbraga,braga ).
+cuidado( 6,raioX,hporto,porto).
+cuidado( 7,consulta,hporto,porto).
+cuidado( 8,nascimento,hfaro,faro).
+cuidado( 9,ecografia,hfaro,faro).
 
 ato( data( 1,2,1996 ),3,3,10 ).
 ato( data( 15,3,2017 ),1,2,15 ).
@@ -46,6 +52,8 @@ ato( data( 17,4,1997 ),4,4,5 ).
 ato( data( 15,3,2007 ),1,5,0 ).
 ato( data( 15,3,2007 ),2,5,0 ).
 ato( data( 15,3,2007 ),3,2,0 ).
+ato( data( 16,3,2017 ),5,6,12 ).
+ato( data( 16,3,2007 ),6,9, 20).
 
 
 
