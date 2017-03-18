@@ -183,9 +183,9 @@ listaInst( S ) :-
 % Lista é a lista de todos os cuidados na cidade/instituição
 
 listaCui( cidade, C, L) :-
-    findall( cuidado( X,Y,Z,C ),cuidado( X,Y,Z,C ),L).
+    findall( (Y,Z),cuidado( X,Y,Z,C ),L).
 listaCui( inst, I, L) :-
-    findall( cuidado( X,Y,I,Z ),cuidado( X,Y,I,Z ),L).
+    findall( (Y,Z),cuidado( X,Y,I,Z ),L).
 
 
 
