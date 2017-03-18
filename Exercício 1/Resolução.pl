@@ -179,7 +179,7 @@ pesquisaUtentes( morada,P,L ) :-
 % cuidados medicos
 
 listaInst( S ) :-
-    findall( N,cuidado( _,_,N,_ ),L ),
+    findall( N,cuidado( _,_,N,_ ),L),
     tiraRepetidos( L, S ).
 
 
@@ -429,16 +429,19 @@ concat( [X|Xs],L2,[X|L] ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado tiraRepetidos: Lista, Resultado -> {V,F}
 
-tiraRepetidos( [],[] ).
-tiraRepetidos( [H|T],[H|R] ) :-
-    nao( pertence( H,T ) ), 
-    tiraRepetidos( T,R ).
-tiraRepetidos( [H|T],[R] ) :-
-    pertence( H,T ), 
-    tiraRepetidos( T,R ).
+tiraRepetidos([],[]).
+tiraRepetidos([H|Lista],Res) :-
+	eliminaElementos(H,Lista,R),
+	concat([H],Rn,Res),
+	tiraRepetidos(R,Rn).
 
 
-
+eliminaElementos(X,[],[]).
+eliminaElementos(X,[X|T],R) :-
+	eliminaElementos(X,T,R).
+eliminaElementos(X,[H|T],[H|Z]) :-
+	X \== H,
+	eliminaElementos(X,T,Z).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do meta-predicado nao: Questao -> {V,F}
