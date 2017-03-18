@@ -13,7 +13,7 @@ t
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: definicoes iniciais
-u
+
 :- op( 900,xfy,'::' ).
 :- dynamic utente/4.
 :- dynamic ato/4.
@@ -29,9 +29,9 @@ utente( 1,diogo,21,braga ).
 utente( 2,rui,20,braga ).
 utente( 3,esm,21,prado ).
 utente( 4,miguel,22,viana ).
-utente( 5,joao,26,guimaraes).
-utente( 6,lisandra,25, fafe).
-utente( 7,paulo,24,braganca).
+utente( 5,joao,26,guimaraes ).
+utente( 6,lisandra,25, fafe ).
+utente( 7,paulo,24,braganca ).
 
 instituicao( hpbraga ).
 instituicao( hsjoao ).
@@ -48,7 +48,7 @@ cuidado( 6,raioX,hporto,porto ).
 cuidado( 7,consulta,hporto,porto ).
 cuidado( 8,nascimento,hfaro,faro ).
 cuidado( 9,ecografia,hfaro,faro ).
-cuidado(10,quimioterapia,hsjoao,porto).
+cuidado( 10,quimioterapia,hsjoao,porto ).
 
 ato( data( 1,2,1996 ),3,3,10 ).
 ato( data( 15,3,2017 ),1,2,15 ).
@@ -140,8 +140,15 @@ ano( data( D,M,A ),A ).
 % Extensao do predicado ato medico: 
 % Data, IdUtente, IdServico, Custo -> {V,F}
 
+% Invariante Estrutural: nao permitir a insercao de conhecimento
+%                        repetido
 
-
++ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).	
++ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Identificar os utentes por critérios de seleção;
