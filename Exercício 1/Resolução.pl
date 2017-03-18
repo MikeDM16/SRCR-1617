@@ -121,13 +121,13 @@ ano( data( D,M,A ),A ).
 % Invariante Estrutural: nao permitir a insercao de conhecimento
 %                        repetido
 
-+instituicao( Nome ) :: ( solucoes( ID,instituicao( Nome ),S ),
++instituicao( I ) :: ( solucoes( I,instituicao( I ),S ),
                           comprimento( S,L ), 
                           L == 1 ).
 
 % Invariante Referencial: garantir a consistênica de conhecimento
 
--instituicao( Nome ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
+-instituicao( I ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
                           comprimento( S,L ), 
                           L == 0 ).
 
@@ -137,16 +137,6 @@ ano( data( D,M,A ),A ).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado ato medico: 
 % Data, IdUtente, IdServico, Custo -> {V,F}
-
-% Invariante Estrutural: nao permitir a insercao de conhecimento
-%                        repetido
-
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).	
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).	
 
 
 
@@ -436,12 +426,18 @@ tiraRepetidos([H|Lista],Res) :-
 	tiraRepetidos(R,Rn).
 
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado eliminaElementos: Elemento, Lista, Resultado -> {V,F}
+
 eliminaElementos(X,[],[]).
 eliminaElementos(X,[X|T],R) :-
 	eliminaElementos(X,T,R).
 eliminaElementos(X,[H|T],[H|Z]) :-
 	X \== H,
 	eliminaElementos(X,T,Z).
+
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do meta-predicado nao: Questao -> {V,F}
@@ -555,6 +551,7 @@ somatorio([X|Y],N):- somatorio(Y,R), N is R+X.
 % Extensão do predicado que calcula o último elemento de uma lista
 
 ultimo([X|Xs], Last) :-  lastAux(Xs, X, Last).
+
 lastAux([], Last, Last).
 lastAux([X|Xs], _, Last) :- lastAux(Xs, X, Last).
 
