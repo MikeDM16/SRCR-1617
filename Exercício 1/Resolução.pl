@@ -102,7 +102,7 @@ ano( data( D,M,A ),A ).
 %                        repetido
 
 +cuidado( ID,D,I,C ) :: ( solucoes( ID,cuidado( ID,_,_,_ ),S ),
-                          comprimento(S, L), 
+                          comprimento( S,L ), 
                           instituicao( I ),
                           L == 1 ).
 
@@ -347,13 +347,13 @@ custo( d,Data,R ) :-
     findall( C,ato( Data,_,_,C ),L ),
 	somatorio( L,R ).
 custo( m,Mes,R ) :-
-    findall( C,(ato( D,_,_,C ), mes( D, Mes ) ),L ),
+    findall( C,(ato( D,_,_,C ),mes( D,Mes ) ),L ),
     somatorio( L,R ).
 custo( a,Ano,R ) :-
-    findall( C,(ato( D,_,_,C ), ano( D, Ano ) ),L ),
+    findall( C,(ato( D,_,_,C ),ano( D,Ano ) ),L ),
     somatorio( L,R ).
 custo( ma,Mes,Ano,R ) :-
-    findall( C,(ato( D,_,_,C ), mes( D, Mes ) , ano( D,Ano ) ),L ),
+    findall( C,(ato( D,_,_,C ),mes( D,Mes ),ano( D,Ano ) ),L ),
     somatorio( L,R ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -389,7 +389,7 @@ instituicoesServico( S,L ) :-
 % Ano, (Serviço, NOcorrencias) -> {V,F}
 
 servicoMaisUsado( A,(Desc,N) ) :- 
-    findall( ( ID,NA ),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
+    findall( (ID,NA),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
     tuploMaximo( L,(IDS,N) ),
     findall( Descricao, cuidado( IDS,Descricao,_,_ ),Temp ),
     ultimo( Temp,Desc ).
