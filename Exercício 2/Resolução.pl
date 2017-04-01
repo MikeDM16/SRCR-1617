@@ -2,7 +2,7 @@
 % SIST. REPR. CONHECIMENTO E RACIOCINIO - MiEI/3
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Resolução do exercício 1 (Trabalho prático)
+% Resolução do Exercício prático 2
 t
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: Declaracoes iniciais
@@ -16,9 +16,10 @@ t
 
 :- op( 900,xfy,'::' ).
 :- dynamic utente/4.
-:- dynamic ato/4.
-:- dynamic instituicao/1.
+:- dynamic ato/3.
+:- dynamic instituicao/2.
 :- dynamic cuidado/4.
+:- dynamic '-'/1.
 
 
 
@@ -30,25 +31,66 @@ utente( 2,rui,20,braga ).
 utente( 3,esm,21,prado ).
 utente( 4,miguel,22,viana ).
 utente( 5,joao,26,guimaraes ).
-utente( 6,lisandra,25, fafe ).
+utente( 6,lisandra,25,fafe ).
 utente( 7,paulo,24,braganca ).
 
-instituicao( hpbraga ).
-instituicao( hsjoao ).
-instituicao( hviana ).
-instituicao( hporto ).
-instituicao( hfaro ).
+-utente( 20,anastacia,30,felgueiras ).
+-utente( 21,manuel,20,braganca ).
 
-cuidado( 1,analises,hpbraga,braga ).
-cuidado( 2,tac,hsjoao,porto ).
-cuidado( 3,nascimento,hpbraga,braga ).
-cuidado( 4,febre,hviana,hviana ).
-cuidado( 5,dar-sangue,hpbraga,braga ).
-cuidado( 6,raioX,hporto,porto ).
-cuidado( 7,consulta,hporto,porto ).
-cuidado( 8,nascimento,hfaro,faro ).
-cuidado( 9,ecografia,hfaro,faro ).
-cuidado( 10,quimioterapia,hsjoao,porto ).
+utente( 22,maria,xpto001,guarda ).
+excecao( utente( IDU,N,I,M ) ) :-
+    utente( IDU,N,xpto001,M ).
+
+excecao( utente( 23,joana,22,braga ) ).
+excecao( utente( 23,joana,22,guimaraes ) ).
+excecao( utente( 24,mauricio,I,lisboa ) ) :-
+    I >= 18, I =< 24.
+
+utente( 25,trump,70,xpto006 ).
+excecao( utente( IDU,N,I,L ) ) :-
+    utente( IDU,N,I,xpto006 ).
+nulo( xpto006 ).
++utente( IDU,N,I,M ) :: ( solucoes( X,( utente( 25,_,_,X ),nao( nulo( X ) ) ),S ),
+                          comprimento( S,N ),
+                          N == 0 ).
+
+
+
+instituicao( hpbraga,braga ).
+instituicao( hsjoao,porto ).
+instituicao( hviana,viana ).
+instituicao( hporto,porto ).
+instituicao( hfaro,faro ).
+
+-instituicao( hsjoao,braga ).
+
+instituicao( hsmaria,xpto002 ).
+excecao( instituicao( I,L ) ) :-
+    instituicao( I,xpto002 ).
+
+
+
+cuidado( 1,analises,instituicao( hpbraga,braga ) ).
+cuidado( 2,tac,instituicao( hsjoao,porto ) ).
+cuidado( 3,nascimento,instituicao( hpbraga,braga ) ).
+cuidado( 4,febre,instituicao( hviana,viana ) ).
+cuidado( 5,dar-sangue,instituicao( hpbraga,braga ) ).
+cuidado( 6,raioX,instituicao( hporto,porto ) ).
+cuidado( 7,consulta,instituicao( hporto,porto ) ).
+cuidado( 8,nascimento,instituicao( hfaro,faro ) ).
+cuidado( 9,ecografia,instituicao( hfaro,faro ) ).
+cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
+
+-cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
+
+cuidado( 20,pediatria,xpto003 ).
+excecao( cuidado( IdServ,D,I ) ) :-
+    cuidado( IdServ,D,xpto003 ).
+
+excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
+excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
+
+
 
 ato( data( 1,2,1996 ),3,3,10 ).
 ato( data( 15,3,2017 ),1,2,15 ).
@@ -59,6 +101,28 @@ ato( data( 15,3,2007 ),3,2,0 ).
 ato( data( 16,3,2017 ),5,6,12 ).
 ato( data( 16,3,2007 ),6,9,20 ).
 ato( data( 16,3,2007 ),3,1,40 ).
+
+-ato( data( D,M,2005 ),1,1,P ).
+-ato( data( 31,8,2000 )3,7,50 ).
+
+ato( xpto004,6,2,80 ).
+excecao( ato( D,IDU,IdServ,P ) ) :-
+    ato( xpto004,IDU,IdServ,P ).
+
+ato( data( xpto005,3,2007 ),5,3,20 ).
+excecao( ato( data( D,M,A ),IDU,IdServ,P ) ) :-
+    ato( data( xpto005,M,A ),IDU,IdServ,P ).
+
+excecao( ato( data(3,6,2007 ),6,9,P ) ) :-
+    P >= 10, P =< 25.
+
+ato( data(1,4,2017),25,10,xpto007 ).
+excecao( ato( D,IDU,IdServ,P ) ) :-
+    ato( D,IDU,IdServ,xpto007 ).
+nulo( xpto007 ).
++ato( D,IDU,IdServ,P ) :: ( solucoes( P,( ato( _,25,_,P ),nao( nulo( P ) ) ),S ),
+                            comprimento( S,N ),
+                            N == 0 ).
 
 
 
@@ -150,270 +214,44 @@ ano( data( D,M,A ),A ).
                          comprimento( S,L ), 
                          L == 1 ).
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar os utentes por critérios de seleção;
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado pesquisaUtentes: 
-% Opcao, Parametro, Lista -> {V,F}
 
-pesquisaUtentes( id,P,L ) :-
-    findall( utente( P,X,Y,Z ),utente( P,X,Y,Z ),L ).
-pesquisaUtentes( nome,P,L ) :-
-    findall( utente(X,P,Y,Z ),utente( X,P,Y,Z ),L ).
-pesquisaUtentes( idade,P,L ) :-
-    findall( utente(X,Y,P,Z ),utente( X,Y,P,Z ),L ).
-pesquisaUtentes( morada,P,L ) :-
-    findall( utente(X,Y,Z,P ),utente( X,Y,Z,P ),L ).
 
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar as instituições prestadoras de cuidados de saúde;
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listaInst: Lista -> {V,F}
-% Lista é a lista de todas as instituições a que estão associados
-% cuidados medicos
-
-listaInst( S ) :-
-    findall( N,cuidado( _,_,N,_ ),L),
-    tiraRepetidos( L, S ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar os cuidados prestados por instituição/cidade;
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listaCui: Opcao, Parametro, Lista -> {V,F}
-% Lista é a lista de todos os cuidados na cidade/instituição
-
-listaCui( cidade, C, L) :-
-    findall( (Y,Z),cuidado( X,Y,Z,C ),L).
-listaCui( inst, I, L) :-
-    findall( (Y,Z),cuidado( X,Y,I,Z ),L).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar os utentes de uma instituição/servico
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listaUtentes: Opcao, Parametro, Lista -> {V,F}
-% Lista é a lista de todos os utentes com atos medicos na
-% instituição/cuidado
-% Parametro é a descrição da instituição/cuidado
-
-listaUtentes( inst,I,L ) :- 
-    procuraCui( inst,I,Temp ),
-    procuraAtos( Temp,Temp2 ),
-    procuraUtentes( Temp2,L ).
-listaUtentes( cuid,C,L ) :- 
-    procuraCui( cuid,C,Temp ),
-    procuraAtos( Temp,Temp2 ),
-    procuraUtentes( Temp2,L ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado procuraCui: Tipo, Parametro, Lista -> {V,F}
-% Lista é a lista dos IdsServ da instituição/cuidado
-% Parametro é a descrição da instituição/cuidado
-
-procuraCui( inst,I,L ) :-
-    findall( X,cuidado( X,_,I,_ ),Temp ),
-    tiraRepetidos( Temp,L ).
-procuraCui( cuid,D,L ) :-
-    findall( X,cuidado( X,D,_,_ ),Temp ),
-    tiraRepetidos( Temp,L ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado procuraAtos: ListaIdsServ, Lista -> {V,F}
-% Lista é a lista dos IdsUt com serviços da ListaIdsServ
-
-procuraAtos( [X],L ) :-
-    findall( U,ato( _,U,X,_ ),L ).
-procuraAtos( [H|T],L ) :-
-    findall( U, ato( _,U,H,_ ),Temp ),
-    procuraAtos( T,Temp2 ),
-    concat( Temp,Temp2,Temp3 ),
-    tiraRepetidos( Temp3,L ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado procuraUtentes: ListaIdsUt, Lista -> {V,F}
-% Lista é a lista com (IdUt, Nome) dos utentes em ListaIdsUt
-
-procuraUtentes( [X],L ) :-
-    findall( ( X,N ),utente( X,N,_,_ ),L ).
-procuraUtentes( [H|T],L ) :-
-    findall( ( H,N ),utente( H,N,_,_ ),Temp ),
-    procuraUtentes( T,Temp2 ),
-    concat( Temp,Temp2,Temp3 ),
-    tiraRepetidos( Temp3,L ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Identificar os atos médicos realizados, por utente/instituição/serviço;
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listaAtosMed: Opcao, Parametro, Lista -> {V,F}
-% Lista é a lista dos atos medicos do utente/instituição/serviço
-
-listaAtosMed( utente,IDU,L ) :-
-    findall( ato( D,IDU,IDC,C ),ato( D,IDU,IDC,C ),Temp ),
-    tiraRepetidos( Temp,L ).
-listaAtosMed( cuid,IDC,L ) :-
-    findall( ato( D,IDU,IDC,C ),ato( D,IDU,IDC,C ),Temp ),
-    tiraRepetidos( Temp,L ).
-listaAtosMed( inst,I,L ) :-
-    procuraCui( inst,I,Temp ),
-    listarAtos( Temp,L ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado listarAtos: ListaIdsServ, Lista -> {V,F}
-% Lista é a lista dos atos medicos dos serviços em ListaIdsServ
-
-listarAtos( [ID],L ) :-
-    findall( ato( X,Y,ID,Z ),ato( X,Y,ID,Z ),L ).
-listarAtos( [ID|T],L ) :-
-    findall( ato( X,Y,ID,Z ),ato( X,Y,ID,Z ),Temp ),
-    listarAtos( T,Temp2 ),
-    concat( Temp,Temp2,Temp3 ),
-    tiraRepetidos( Temp3,L ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Determinar todas as instituições/serviços a que um utente já recorreu;
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado histUtente: Tipo, id Utente, Lista -> {V,F}
-% Lista é a lista das instituições/serviços a que o utente recorreu
-
-histUtente( inst,ID,L ) :-
-    atosCuidados( ID,Temp ),
-    cuidadosInst( Temp,L ).
-histUtente( cuid,ID,L) :-
-    findall( IDS,ato( _,ID,IDS,_ ),Temp ),
-    tiraRepetidos( Temp,L ).                
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado atosCuidados: IdUt, Lista -> {V,F}
-% Lista é a lista com os IdServ a que o utente se sujeitou
-
-atosCuidados( ID,L ) :-
-    findall( IDS,ato( _,ID,IDS,_ ),Temp ),
-    tiraRepetidos( Temp,L ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado cuidadosInst: ListaIdsServ, Lista -> {V,F}
-% Lista é a lista das instituições dos IdsServ em ListaIdsServ
-
-cuidadosInst( [IDC],L ) :-
-    findall( I,cuidado( IDC,_,I,_ ),L ).
-
-cuidadosInst( [IDC|T],L ) :-
-    findall( I,cuidado( IDC,_,I,_ ),Temp ),
-    cuidadosInst( T,Temp2 ),
-    concat( Temp,Temp2,Temp3 ),
-    tiraRepetidos( Temp3,L ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Calcular o custo total dos atos medicos por 
-% utente/serviço/instituição/data;
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado custo: Tipo,Parametro,Retorno -> {V,F}
-% Parametro : IDutente, IDcuidado, Instituicao, Data, Mes, Ano, Mes&Ano
-
-custo(u,IDU,R) :- 
-    findall( C,ato( _,IDU,_,C ),L ),
-	somatorio( L,R ).
-custo(c,IDC,R) :-
-    findall( C,ato( _,_,IDC,C ),L ),
-	somatorio( L,R ).
-custo( inst,I,R ) :- 
-    findall( X,cuidado( X,_,I,_ ),L ),
-    custoInstituicao(L,R).
-custo( d,Data,R ) :-
-    findall( C,ato( Data,_,_,C ),L ),
-	somatorio( L,R ).
-custo( m,Mes,R ) :-
-    findall( C,(ato( D,_,_,C ),mes( D,Mes ) ),L ),
-    somatorio( L,R ).
-custo( a,Ano,R ) :-
-    findall( C,(ato( D,_,_,C ),ano( D,Ano ) ),L ),
-    somatorio( L,R ).
-custo( ma,Mes,Ano,R ) :-
-    findall( C,(ato( D,_,_,C ),mes( D,Mes ),ano( D,Ano ) ),L ),
-    somatorio( L,R ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado custoInst: ListaIdsServ, Custo -> {V,F}
-
-custoInstituicao( [IDC],R ) :-
-	findall( C,ato( _,_,IDC,C ),L ),
-	somatorio( L,R ).
-
-custoInstituicao( [IDC|T],R ) :-
-	findall( C,ato( _,_,IDC,C ),L ),
-	somatorio( L,Temp ),
-	custoInstituicao( T,Temp2 ),
- 	R is Temp + Temp2.
-
-
-
-
-%------------------------ Funcionalidades Extra -------------------------
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado instituicoesServico: Serviço, Lista -> {V,F}
-% Lista é a lista das instituições que disponibilizam um serviço
-
-instituicoesServico( S,L ) :-
-    findall( I,cuidado(_,S,I,_),L ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado servicoMaisUsado:
-% Ano, (Serviço, NOcorrencias) -> {V,F}
-
-servicoMaisUsado( A,(Desc,N) ) :- 
-    findall( (ID,NA),( ato( D,_,ID,_ ),ano( D,A ),quantos( A,ID,NA ) ),L ),
-    tuploMaximo( L,(IDS,N) ),
-    findall( Descricao, cuidado( IDS,Descricao,_,_ ),Temp ),
-    ultimo( Temp,Desc ).
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado quantos: Ano, IdServ, Numero -> {V,F}
-% Número é o número de atos registado no Ano, para o serviço IdServ
-
-quantos( A,ID,NA ) :- findall( ID, ( ato( D,_,ID,_ ),ano( D,A ) ),L ),
-                      comprimento( L,NA ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado datasVisitaInst: NomeUt, Inst, Lista -> {V,F}
-% Lista é a lista das datas em que o utente visitou a instituição
-
-datasVisitaInst( N,I,L ) :-
-    findall( D,( utente( IDU,N,_,_ ),ato( D,IDU,IDS,_ ),cuidado( IDS,_,I,_ ) ),L ).
 
 
 
 %------------------------ Predicados Auxiliares -------------------------
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado demoLista: Lista1, R -> {V,F}
+
+demoLista( [],[] ).
+demoLista( [Q|L],[R|S] ) :-
+    demo( Q,R ),
+    demoLista( L,S ).
+
+demo( Q,verdadeiro ) :-
+    Q.
+demo( Q,falso ) :-
+    -Q.
+demo( Q,desconhecido ) :-
+    nao( Q ),
+    nao( -Q ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do meta-predicado nao: Questao -> {V,F}
+
+nao( Questao ) :-
+    Questao,
+    !, fail.
+
+nao( Questao ).
+
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado concat: Lista1, Lista2, R -> {V,F}
@@ -435,6 +273,8 @@ tiraRepetidos([H|Lista],Res) :-
 	tiraRepetidos(R,Rn).
 
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado eliminaElementos: Elemento, Lista, Resultado -> {V,F}
 
@@ -444,18 +284,6 @@ eliminaElementos(X,[X|T],R) :-
 eliminaElementos(X,[H|T],[H|Z]) :-
 	X \== H,
 	eliminaElementos(X,T,Z).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do meta-predicado nao: Questao -> {V,F}
-
-nao( Questao ) :-
-    Questao,
-    !, fail.
-
-nao( Questao ).
 
 
 
