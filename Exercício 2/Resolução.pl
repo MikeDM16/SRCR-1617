@@ -25,7 +25,8 @@ t
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Dados da base de conhecimento
+% Extensao do predicado utente: IdUt, Nome, Idade, Morada -> {V,F,D}
+
 utente( 1,diogo,21,braga ).
 utente( 2,rui,20,braga ).
 utente( 3,esm,21,prado ).
@@ -56,19 +57,32 @@ nulo( xpto006 ).
 
 
 
-instituicao( hpbraga,braga ).
-instituicao( hsjoao,porto ).
-instituicao( hviana,viana ).
-instituicao( hporto,porto ).
-instituicao( hfaro,faro ).
-
--instituicao( hsjoao,braga ).
-
-instituicao( hsmaria,xpto002 ).
-excecao( instituicao( I,L ) ) :-
-    instituicao( I,xpto002 ).
+-utente( IDU,N,I,M ) :-
+    nao( utente( IDU,N,I,M ) ),
+    nao( excecao( utente( IDU,N,I,M ) ) ).
 
 
+% Invariante Estrutural: nao permitir a insercao de conhecimento
+%                        repetido
+
++utente( ID,N,I,M ) :: ( solucoes( ID, utente( ID,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
+
+
+% Invariante Referencial: garantir a consistênica de conhecimento
+
+% O Utente removido não pode ter atos associados
+-utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,ID,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 0 ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado cuidado prestado: 
+% IdServ, Descrição, Instituição -> {V,F,D}
 
 cuidado( 1,analises,instituicao( hpbraga,braga ) ).
 cuidado( 2,tac,instituicao( hsjoao,porto ) ).
@@ -91,6 +105,77 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
 excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
 
 
+
+-cuidado( IdServ,D,I ) :-
+    nao( uidado( IdServ,D,I ) ),
+    nao( excecao( uidado( IdServ,D,I ) ) ).
+
+
+
+% Não permitir a insercao de cuidados com o mesmo identificador
+
++cuidado( ID,D,I ) :: ( solucoes( ID,cuidado( ID,_,_ ),S ),
+                        comprimento( S,L ), 
+                        L == 1 ).
+
+
+% Não permitir a insercao de cuidados repetidos numa instituição
+
++cuidado( ID,D,I ) :: ( solucoes( D,cuidado( _,D,I ),S ),
+                        comprimento( S,L ), 
+                        L == 1 ).
+
+
+% A instituição deve exisir na base de conhecimento
+
++cuidado( ID,D,instituicao( I,L ) ) :: instituicao( I,L ).
+
+
+% O Cuidado removido não pode ter atos medicos associados
+
+-cuidado( ID,D,I ) :: ( solucoes( ID,ato( _,_,ID,_ ),S ),
+                        comprimento( S,L ),
+                        L == 0 ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado Instituição: Nome, Cidade -> {V,F,D}
+
+instituicao( hpbraga,braga ).
+instituicao( hsjoao,porto ).
+instituicao( hviana,viana ).
+instituicao( hporto,porto ).
+instituicao( hfaro,faro ).
+
+-instituicao( hsjoao,braga ).
+
+instituicao( hsmaria,xpto002 ).
+excecao( instituicao( I,L ) ) :-
+    instituicao( I,xpto002 ).
+
+
+
+% Não permitir a insercao de instituição com o mesmo nome
+
++instituicao( I,C ) :: ( solucoes( I,instituicao( I,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
+
+
+% Não permite remoção se estiver associado algum ato medico
+
+-instituicao( I,C ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
+                         comprimento( S,L ), 
+                         L == 0 ).
+
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado ato medico: 
+% Data, IdUtente, IdServico, Custo -> {V,F,D}
 
 ato( data( 1,2,1996 ),3,3,10 ).
 ato( data( 15,3,2017 ),1,2,15 ).
@@ -126,6 +211,21 @@ nulo( xpto007 ).
 
 
 
+% Não permitir inserir atos com IdUt não registados
+
++ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
+
+
+% Não permitir inserir atos com IdServ não registados
+
++ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
+
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao dos predicados dia, mes e ano: Data, Dia/Mes/Ano -> {V,F}
@@ -133,89 +233,6 @@ nulo( xpto007 ).
 dia( data( D,M,A ),D ).
 mes( data( D,M,A ),M ).
 ano( data( D,M,A ),A ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado utente: IdUt, Nome, Idade, Morada -> {V,F}
-
-% Invariante Estrutural: nao permitir a insercao de conhecimento
-%                        repetido
-
-+utente( ID,N,I,M ) :: ( solucoes( ID, utente( ID,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
-
-
-% Invariante Referencial: garantir a consistênica de conhecimento
-
-% O Utente removido não pode ter atos associados
--utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,ID,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 0 ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado cuidado prestado: 
-% IdServ, Descrição, Instituição, Cidade -> {V,F}
-
-% Invariante Estrutural: nao permitir a insercao de conhecimento
-%                        repetido
-
-+cuidado( ID,D,I,C ) :: ( solucoes( ID,cuidado( ID,_,_,_ ),S ),
-                          comprimento( S,L ), 
-                          instituicao( I ),
-                          L == 1 ).
-
-% Invariante Referencial: garantir a consistênica de conhecimento
-
-% O Cuidado removido não pode ter atos medicos associados
--cuidado( ID,D,I,C ) :: ( solucoes( ID,ato( _,_,ID,_ ),S ),
-                          comprimento( S,L ),
-                          L == 0 ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado Instituição: 
-% Nome -> {V,F}
-
-% Invariante Estrutural: nao permitir a insercao de conhecimento
-%                        repetido
-
-+instituicao( I ) :: ( solucoes( I,instituicao( I ),S ),
-                          comprimento( S,L ), 
-                          L == 1 ).
-
-% Invariante Referencial: garantir a consistênica de conhecimento
-
--instituicao( I ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
-                          comprimento( S,L ), 
-                          L == 0 ).
-
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado ato medico: 
-% Data, IdUtente, IdServico, Custo -> {V,F}
-
-% Invariante Estrutural: nao permitir a insercao de conhecimento
-%                        repetido
-
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).	
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
-
-
-
 
 
 
