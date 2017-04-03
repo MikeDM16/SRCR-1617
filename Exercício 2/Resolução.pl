@@ -167,8 +167,7 @@ excecao( instituicao( I,L ) ) :-
                          comprimento( S,L ), 
                          L == 1 ).
 
-
-% Não permite remoção se estiver associado algum ato medico
+% Não permite remoção se estiver associado algum cuidado prestado
 
 -instituicao( I,C ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
                          comprimento( S,L ), 
