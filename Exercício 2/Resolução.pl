@@ -16,9 +16,9 @@ t
 
 :- op( 900,xfy,'::' ).
 :- dynamic utente/4.
-:- dynamic ato/3.
+:- dynamic ato/4.
 :- dynamic instituicao/2.
-:- dynamic cuidado/4.
+:- dynamic cuidado/3.
 :- dynamic '-'/1.
 
 
@@ -36,6 +36,9 @@ utente( 6,lisandra,25,fafe ).
 utente( 7,paulo,24,braganca ).
 
 -utente( 20,anastacia,30,felgueiras ).
+excecao( utente( 20,anastacia,30,M ) ) :-
+    M \= felgueiras.
+
 -utente( 21,manuel,20,braganca ).
 
 utente( 22,maria,xpto001,guarda ).
@@ -190,6 +193,7 @@ ato( data( 16,3,2007 ),3,1,40 ).
 
 -ato( data( D,M,2005 ),1,1,P ).
 -ato( data( 31,8,2000 ),3,7,50 ).
+
 
 -ato( D,IDU,IDS, C ) :- nao( ato( D,IDU,IDS, C )),
                         nao( excecao( ato( D,IDU,IDS, C ) )).
