@@ -101,17 +101,17 @@ cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 -cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
 
 cuidado( 20,pediatria,xpto003 ).
-excecao( cuidado( IdServ,D,I ) ) :-
-    cuidado( IdServ,D,xpto003 ).
+excecao( cuidado( IdS,D,I ) ) :-
+    cuidado( IdS,D,xpto003 ).
 
 excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
 excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
 
 
 
--cuidado( IdServ,D,I ) :-
-    nao( cuidado( IdServ,D,I ) ),
-    nao( excecao( cuidado( IdServ,D,I ) ) ).
+-cuidado( IdS,D,I ) :-
+    nao( cuidado( IdS,D,I ) ),
+    nao( excecao( cuidado( IdS,D,I ) ) ).
 
 
 
@@ -199,21 +199,21 @@ ato( data( 16,3,2007 ),3,1,40 ).
                         nao( excecao( ato( D,IDU,IDS, C ) )).
 
 ato( xpto004,6,2,80 ).
-excecao( ato( D,IDU,IdServ,P ) ) :-
-    ato( xpto004,IDU,IdServ,P ).
+excecao( ato( D,IDU,IdS,P ) ) :-
+    ato( xpto004,IDU,IdS,P ).
 
 ato( data( xpto005,3,2007 ),5,3,20 ).
-excecao( ato( data( D,M,A ),IDU,IdServ,P ) ) :-
-    ato( data( xpto005,M,A ),IDU,IdServ,P ).
+excecao( ato( data( D,M,A ),IDU,IdS,P ) ) :-
+    ato( data( xpto005,M,A ),IDU,IdS,P ).
 
 excecao( ato( data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
 
 ato( data(1,4,2017),25,10,xpto007 ).
-excecao( ato( D,IDU,IdServ,P ) ) :-
-    ato( D,IDU,IdServ,xpto007 ).
+excecao( ato( D,IDU,IdS,P ) ) :-
+    ato( D,IDU,IdS,xpto007 ).
 nulo( xpto007 ).
-+ato( D,IDU,IdServ,P ) :: ( solucoes( P,( ato( _,25,_,P ),nao( nulo( P ) ) ),S ),
++ato( D,IDU,IdS,P ) :: ( solucoes( P,( ato( _,25,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
 
