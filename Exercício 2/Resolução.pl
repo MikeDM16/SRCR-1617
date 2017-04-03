@@ -107,8 +107,8 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
 
 
 -cuidado( IdServ,D,I ) :-
-    nao( uidado( IdServ,D,I ) ),
-    nao( excecao( uidado( IdServ,D,I ) ) ).
+    nao( cuidado( IdServ,D,I ) ),
+    nao( excecao( cuidado( IdServ,D,I ) ) ).
 
 
 
@@ -190,6 +190,9 @@ ato( data( 16,3,2007 ),3,1,40 ).
 
 -ato( data( D,M,2005 ),1,1,P ).
 -ato( data( 31,8,2000 ),3,7,50 ).
+
+-ato( D,IDU,IDS, C ) :- nao( ato( D,IDU,IDS, C )),
+                        nao( excecao( ato( D,IDU,IDS, C ) )).
 
 ato( xpto004,6,2,80 ).
 excecao( ato( D,IDU,IdServ,P ) ) :-
