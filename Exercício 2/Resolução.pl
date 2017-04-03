@@ -155,7 +155,8 @@ instituicao( hsmaria,xpto002 ).
 excecao( instituicao( I,L ) ) :-
     instituicao( I,xpto002 ).
 
-
+-instituicao( N,C ) :- nao( instituicao( N,C ) ), 
+                       nao( excecao( instituicao( N,C ))).
 
 % Não permitir a insercao de instituição com o mesmo nome
 
@@ -188,7 +189,7 @@ ato( data( 16,3,2007 ),6,9,20 ).
 ato( data( 16,3,2007 ),3,1,40 ).
 
 -ato( data( D,M,2005 ),1,1,P ).
--ato( data( 31,8,2000 )3,7,50 ).
+-ato( data( 31,8,2000 ),3,7,50 ).
 
 ato( xpto004,6,2,80 ).
 excecao( ato( D,IDU,IdServ,P ) ) :-
