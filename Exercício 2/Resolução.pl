@@ -89,12 +89,12 @@ nulo( xpto006 ).
 
 cuidado( 1,analises,instituicao( hpbraga,braga ) ).
 cuidado( 2,tac,instituicao( hsjoao,porto ) ).
-cuidado( 3,nascimento,instituicao( hpbraga,braga ) ).
-cuidado( 4,febre,instituicao( hviana,viana ) ).
-cuidado( 5,dar-sangue,instituicao( hpbraga,braga ) ).
+cuidado( 3,parto,instituicao( hpbraga,braga ) ).
+cuidado( 4,ortopedia,instituicao( hviana,viana ) ).
+cuidado( 5,doar-sangue,instituicao( hpbraga,braga ) ).
 cuidado( 6,raioX,instituicao( hporto,porto ) ).
-cuidado( 7,consulta,instituicao( hporto,porto ) ).
-cuidado( 8,nascimento,instituicao( hfaro,faro ) ).
+cuidado( 7,medicina-geral,instituicao( hporto,porto ) ).
+cuidado( 8,parto,instituicao( hfaro,faro ) ).
 cuidado( 9,ecografia,instituicao( hfaro,faro ) ).
 cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 
