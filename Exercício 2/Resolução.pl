@@ -26,6 +26,7 @@
 :- dynamic nulo/1.
 :- dynamic excecao/1.
 :- dynamic '-'/1.
+:- dynamic '::'/2.
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -489,6 +490,20 @@ evolucaoImpreciso( utente( ID,N,I,M ),idade,Linf,Lsup ) :-
 evolucaoImpreciso( ato( ID,D,IDU,IDS,C ),custo,Linf,Lsup ) :-
     assert( ( excecao( ato( ID,D,IDU,IDS,C ) ) :- C >= Linf, I =< Lsup ) ).
 
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% imperfeito do tipo interdito
+
+evolucaoInterdito( utente( ID,N,I,M ),idade ) :-
+    nao( existeXPTO( I ) ),
+    evolucao( utente( ID,N,I,M ) ),
+    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ),
+    assert( nulo( I ) ),
+    assert( ( +utente( IDU,NU,IU,MU ) :: ( solucoes( X,( utente( ID,_,X,_ ),nao( nulo( X ) ) ),S ),
+                                           comprimento( S,L ),
+                                           L == 0 ) ) ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
