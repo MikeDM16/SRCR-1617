@@ -90,6 +90,7 @@ nulo( xpto006 ).
                           comprimento( S,N ),
                           N == 0 ).
 
+
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -utente( IDU,N,I,M ) :-
@@ -129,11 +130,13 @@ cuidado( 8,parto,instituicao( hfaro,faro ) ).
 cuidado( 9,ecografia,instituicao( hfaro,faro ) ).
 cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 
+
 % ------- Conhecimento Perfeito Negativo -------%
 
 %%  A instituição hfaro nao presta o cuidado ortopedia.
 
 -cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
+
 
 % Conhecimento Imperfeito Incerto
 
@@ -141,10 +144,12 @@ cuidado( 20,pediatria,xpto003 ).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,D,xpto003 ).
 
+
 % Conhecimento Imperfeito Impreciso
 
 excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
 excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
+
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
@@ -178,6 +183,8 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
                         comprimento( S,L ),
                         L == 0 ).
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado Instituição: Nome, Cidade -> {V,F,D}
 
@@ -189,9 +196,11 @@ instituicao( hviana,viana ).
 instituicao( hporto,porto ).
 instituicao( hfaro,faro ).
 
+
 % Conhecimento Perfeito Negativo
 
 -instituicao( hsjoao,braga ).
+
 
 % Conhecimento Imperfeito Incerto
 
@@ -199,10 +208,12 @@ instituicao( hsmaria,xpto002 ).
 excecao( instituicao( I,L ) ) :-
     instituicao( I,xpto002 ).
 
+
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -instituicao( N,C ) :- nao( instituicao( N,C ) ), 
                        nao( excecao( instituicao( N,C ))).
+
 
 % Não permitir a insercao de instituição com o mesmo nome
 
@@ -210,11 +221,13 @@ excecao( instituicao( I,L ) ) :-
                          comprimento( S,L ), 
                          L == 1 ).
 
+
 % Não permite remoção se estiver associado algum cuidado prestado
 
 -instituicao( I,C ) :: ( solucoes( I,cuidado(_,_,I,_),S ),
                          comprimento( S,L ), 
                          L == 0 ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -233,10 +246,12 @@ ato( data( 16,3,2017 ),5,6,12 ).
 ato( data( 16,3,2007 ),6,9,20 ).
 ato( data( 16,3,2007 ),3,1,40 ).
 
+
 % Conhecimento Perfeito Negativo
 
 -ato( data( D,M,2005 ),1,1,P ).
 -ato( data( 31,8,2000 ),3,7,50 ).
+
 
 % Conhecimento Imperfeito Incerto
 
@@ -248,10 +263,12 @@ ato( data( xpto005,3,2007 ),5,3,20 ).
 excecao( ato( data( D,M,A ),IDU,IdS,P ) ) :-
     ato( data( xpto005,M,A ),IDU,IdS,P ).
 
+
 % Conhecimento Imperfeito Impreciso
 
 excecao( ato( data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
+
 
 % Conhecimento Imperfeito Interdito
 
@@ -263,6 +280,7 @@ nulo( xpto007 ).
 +ato( D,IDU,IdS,P ) :: ( solucoes( P,( ato( _,25,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
+
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
@@ -276,11 +294,13 @@ nulo( xpto007 ).
                          comprimento( S,L ), 
                          L == 1 ).
 
+
 % Não permitir inserir atos com IdServ não registados
 
 +ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
                          comprimento( S,L ), 
                          L == 1 ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -289,7 +309,6 @@ nulo( xpto007 ).
 dia( data( D,M,A ),D ).
 mes( data( D,M,A ),M ).
 ano( data( D,M,A ),A ).
-
 
 
 
@@ -305,6 +324,7 @@ demo( Q,falso ) :-
 demo( Q,desconhecido ) :-
     nao( Q ),
     nao( -Q ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -366,6 +386,7 @@ demo2( (Q1 <=> Q2),falso ) :-
 demo2( (Q1 <=> Q2),desconhecido ).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado demoLista: Lista, Lista resultado -> {V,F}
 
@@ -373,6 +394,7 @@ demoLista( [],[] ).
 demoLista( [Q|Qs],[R|Rs] ) :-
     demo( Q,R ),
     demoLista( Qs,Rs ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -383,6 +405,7 @@ demoListaConj( [Q|Qs],R ) :-
     demo( Q,R1 ),
     demoListaConj( Qs,R2 ),
     demo2((R1 and R2),R).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -399,14 +422,15 @@ conjuncao( desconhecido,verdadeiro,desconhecido ).
 conjuncao( desconhecido,falso,falso ).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do meta-predicado nao: Questao -> {V,F}
 
 nao( Questao ) :-
     Questao,
     !, fail.
-
 nao( Questao ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -418,7 +442,6 @@ concat( [X|Xs],L2,[X|L] ) :-
 
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado tiraRepetidos: Lista, Resultado -> {V,F}
 
@@ -427,7 +450,6 @@ tiraRepetidos([H|Lista],Res) :-
 	eliminaElementos(H,Lista,R),
 	concat([H],Rn,Res),
 	tiraRepetidos(R,Rn).
-
 
 
 
@@ -443,14 +465,12 @@ eliminaElementos(X,[H|T],[H|Z]) :-
 
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado pertence: Elem, Lista -> {V,F}
 
 pertence( X,[X|T] ).
 pertence( X,[H|T] ) :-
     pertence( X,T ).
-
 
 
 
@@ -462,14 +482,12 @@ solucoes( X,Y,Z ) :-
 
 
 
-
 %---------------------------------- - - - - - - - - - -  -  -  -  -  -
 % Predicado «comprimento» que calcula o número de elementos
 % existentes numa lista
 
 comprimento( L,S ) :-
     length( L,S ). 
-
 
 
 
@@ -483,7 +501,6 @@ evolucao( Termo ) :-
 
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
 
@@ -494,6 +511,7 @@ insercao( Termo ) :-
     !, fail.
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a involução do conhecimento
 
@@ -502,7 +520,6 @@ involucao( Termo ) :-
     Termo,
     remocao( Termo ),
     testa( LINV ).
-
 
 
 
@@ -517,7 +534,6 @@ remocao( Termo ) :-
 
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que testa uma lista de termos
 
@@ -525,7 +541,6 @@ testa( [] ).
 testa( [H|T] ) :-
     H,
     testa(T).
-
 
 
 
@@ -537,7 +552,6 @@ somatorio([X|Y],N):- somatorio(Y,R), N is R+X.
 
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que calcula o último elemento de uma lista
 
@@ -545,6 +559,7 @@ ultimo([X|Xs], Last) :-  lastAux(Xs, X, Last).
 
 lastAux([], Last, Last).
 lastAux([X|Xs], _, Last) :- lastAux(Xs, X, Last).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
