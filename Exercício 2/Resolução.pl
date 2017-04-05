@@ -24,7 +24,7 @@
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt, Nome, Idade, Morada -> {V,F,D}
 
-% Conhecimento Perfeito Positivo
+% ------- Conhecimento Perfeito Positivo -------%
 
 utente( 1,diogo,21,braga ).
 utente( 2,rui,20,braga ).
@@ -34,26 +34,47 @@ utente( 5,joao,26,guimaraes ).
 utente( 6,lisandra,25,fafe ).
 utente( 7,paulo,24,braganca ).
 
-% Conhecimento Perfeito Negativo
+
+% ------- Conhecimento Perfeito Negativo -------%
+
+%%  O utente manuel com id 21, 20 anos, nega ser de bragança. 
 
 -utente( 21,manuel,20,braganca ).
+
+%%  O utente com o id 20, chamada anastacia de felgueiras nega ter 30 anos.
+
 -utente( 20,anastacia,30,felgueiras ).
 
-% Conhecimento Imperfeito Incerto
+
+% ------- Conhecimento Imperfeito Incerto ------%
+
+%% Desconhece-se a idade do utente com o IdUt 22,
+%% de nome maria e residente na guarda.
 
 utente( 22,maria,xpto001,guarda ).
 excecao( utente( IDU,N,I,M ) ) :-
     utente( IDU,N,xpto001,M ).
 
-%  Conhecimento Imperfeito Impreciso
+
+% ------- Conhecimento Imperfeito Impreciso ------%
+
+%%  A joana, utente com IdUt 23 e com 22 anos de idade,
+%%  mora em braga ou em guimaraes.
 
 excecao( utente( 23,joana,22,braga ) ).
 excecao( utente( 23,joana,22,guimaraes ) ).
 
+%%  Não se sabe ao certo a  idade do mauricio, com o IdUt 24
+%%  e residente em lisboa. Apenas se sabe que possui entre 18 a 24 anos .
+
 excecao( utente( 24,mauricio,I,lisboa ) ) :-
     I >= 18, I =< 24.
 
-% Conhecimento Imprefeito Interdito
+
+% -------  Conhecimento Imprefeito Interdito ------%
+
+%%  O utente com o IdUt 25, de nome trump, com 70 anos,
+%%  exige que não se saiba a sua morada.
 
 utente( 25,trump,70,xpto006 ).
 excecao( utente( IDU,N,I,L ) ) :-
@@ -90,7 +111,7 @@ nulo( xpto006 ).
 % Extensao do predicado cuidado prestado: 
 % IdServ, Descrição, Instituição -> {V,F,D}
 
-% Conhecimento Perfeito Positivo
+% ------- Conhecimento Perfeito Positivo -------%
 
 cuidado( 1,analises,instituicao( hpbraga,braga ) ).
 cuidado( 2,tac,instituicao( hsjoao,porto ) ).
@@ -103,7 +124,9 @@ cuidado( 8,parto,instituicao( hfaro,faro ) ).
 cuidado( 9,ecografia,instituicao( hfaro,faro ) ).
 cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 
-% Conhecimento Perfeito Negativo
+% ------- Conhecimento Perfeito Negativo -------%
+
+%%  A instituição hfaro nao presta o cuidado ortopedia.
 
 -cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
 
