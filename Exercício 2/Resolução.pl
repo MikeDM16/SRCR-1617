@@ -486,10 +486,8 @@ evolucaoImpreciso( Termo ) :-
     evolucao( excecao( Termo ) ).
 evolucaoImpreciso( utente( ID,N,I,M ),idade,Linf,Lsup ) :-
     assert( ( excecao( utente( ID,N,I,M ) ) :- I >= Linf, I =< Lsup ) ).
-
-
-excecao( utente( 24,mauricio,I,lisboa ) ) :-
-    I >= 18, I =< 24.
+evolucaoImpreciso( ato( ID,D,IDU,IDS,C ),custo,Linf,Lsup ) :-
+    assert( ( excecao( ato( ID,D,IDU,IDS,C ) ) :- C >= Linf, I =< Lsup ) ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
