@@ -310,60 +310,60 @@ demo( Q,desconhecido ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado demo2: (Questao1 Questao2), Resposta -> {V,F}
 
-demoC(Q1,Q2,verdadeiro ) :-
+demo2( (Q1 and Q2),verdadeiro ) :-
     demo( Q1,verdadeiro ),
     demo( Q2,verdadeiro ).
-demoC(Q1,Q2,falso ) :-
+demo2( (Q1 and Q2),falso ) :-
     demo( Q1,falso ).
-demoC(Q1,Q2,falso ) :-
+demo2( (Q1 and Q2),falso ) :-
     demo( Q2,falso ).
-demoC(Q1,Q2,desconhecido ).
+demo2( (Q1 and Q2),desconhecido ).
 
-demoD( (Q1 or Q2),verdadeiro ) :-
+demo2( (Q1 or Q2),verdadeiro ) :-
     demo( Q1,verdadeiro ).
-demoD( (Q1 or Q2),verdadeiro ) :-
+demo2( (Q1 or Q2),verdadeiro ) :-
     demo( Q2,verdadeiro ).
-demoD( (Q1 or Q2),falso ) :-
-    demo( Q1,falso ).
+demo2( (Q1 or Q2),falso ) :-
+    demo( Q1,falso ),
     demo( Q2,falso ).
-demoD( (Q1 or Q2),desconhecido ).
+demo2( (Q1 or Q2),desconhecido ).
 
-demoX( (Q1 xor Q2),falso ) :-
-    demo( Q1,falso ).
+demo2( (Q1 xor Q2),falso ) :-
+    demo( Q1,falso ),
     demo( Q2,falso ).
-demoX( (Q1 xor Q2),falso ) :-
-    demo( Q1,verdadeiro ).
+demo2( (Q1 xor Q2),falso ) :-
+    demo( Q1,verdadeiro ),
     demo( Q2,verdadeiro ).
-demoX( (Q1 xor Q2),verdadeiro ) :-
-    demo( Q1, verdadeiro ).
+demo2( (Q1 xor Q2),verdadeiro ) :-
+    demo( Q1, verdadeiro ),
     demo( Q2, falso ).
-demoX( (Q1 xor Q2),verdadeiro ) :-
-    demo( Q1, falso ).
+demo2( (Q1 xor Q2),verdadeiro ) :-
+    demo( Q1, falso ),
     demo( Q2, verdadeiro ).
-demoX( (Q1 xor Q2), desconhecido ).
+demo2( (Q1 xor Q2), desconhecido ).
 
-demoI( (Q1 => Q2),falso ) :-
+demo2( (Q1 => Q2),falso ) :-
     demo( Q1,verdadeiro ),
     demo(Q2, falso).
-demoI( (Q1 => Q2),verdadeiro ) :-
+demo2( (Q1 => Q2),verdadeiro ) :-
     demo( Q1,falso ).
-demoI( (Q1 => Q2),verdadeiro ) :-
+demo2( (Q1 => Q2),verdadeiro ) :-
     demo( Q2,verdadeiro ).
-demoI( (Q1 => Q2),desconhecido ).
+demo2( (Q1 => Q2),desconhecido ).
 
-demoE( (Q1 <=> Q2),verdadeiro ) :-
-    demo( Q1,verdadeiro ).
+demo2( (Q1 <=> Q2),verdadeiro ) :-
+    demo( Q1,verdadeiro ),
     demo( Q2,verdadeiro ).
-demoE( (Q1 <=> Q2),verdadeiro ) :-
-    demo( Q1,falso ).
+demo2( (Q1 <=> Q2),verdadeiro ) :-
+    demo( Q1,falso ),
     demo( Q2,falso ).
-demoE( (Q1 <=> Q2),falso ) :-
-    demo( Q1,verdadeiro ).
+demo2( (Q1 <=> Q2),falso ) :-
+    demo( Q1,verdadeiro ),
     demo( Q2,falso ).
-demoE( (Q1 <=> Q2),falso ) :-
-    demo( Q1,falso ).
+demo2( (Q1 <=> Q2),falso ) :-
+    demo( Q1,falso ),
     demo( Q2,verdadeiro ).
-demoE( (Q1 <=> Q2),desconhecido ).
+demo2( (Q1 <=> Q2),desconhecido ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
