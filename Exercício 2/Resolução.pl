@@ -14,6 +14,11 @@
 % SICStus PROLOG: definicoes iniciais
 
 :- op( 900,xfy,'::' ).
+:- op(500,yfx,'and' ).
+:- op(400,yfx,'or' ).
+:- op(300,yfx,'xor' ).
+:- op(600,yfx,'=>' ).
+:- op(700,yfx,'<=>' ).
 :- dynamic utente/4.
 :- dynamic ato/4.
 :- dynamic instituicao/2.
@@ -291,16 +296,7 @@ ano( data( D,M,A ),A ).
 %------------------------ Predicados Auxiliares -------------------------
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado demoLista: Lista1, R -> {V,F}
-
-demoLista( [],[] ).
-demoLista( [Q|L],[R|S] ) :-
-    demo( Q,R ),
-    demoLista( L,S ).
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado demo: Q, R -> {V,F}
+% Extensao do predicado demo: Questao, Resposta -> {V,F}
 
 demo( Q,verdadeiro ) :-
     Q.
@@ -309,6 +305,98 @@ demo( Q,falso ) :-
 demo( Q,desconhecido ) :-
     nao( Q ),
     nao( -Q ).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado demo2: (Questao1 Questao2), Resposta -> {V,F}
+
+demoC(Q1,Q2,verdadeiro ) :-
+    demo( Q1,verdadeiro ),
+    demo( Q2,verdadeiro ).
+demoC(Q1,Q2,falso ) :-
+    demo( Q1,falso ).
+demoC(Q1,Q2,falso ) :-
+    demo( Q2,falso ).
+demoC(Q1,Q2,desconhecido ).
+
+demoD( (Q1 or Q2),verdadeiro ) :-
+    demo( Q1,verdadeiro ).
+demoD( (Q1 or Q2),verdadeiro ) :-
+    demo( Q2,verdadeiro ).
+demoD( (Q1 or Q2),falso ) :-
+    demo( Q1,falso ).
+    demo( Q2,falso ).
+demoD( (Q1 or Q2),desconhecido ).
+
+demoX( (Q1 xor Q2),falso ) :-
+    demo( Q1,falso ).
+    demo( Q2,falso ).
+demoX( (Q1 xor Q2),falso ) :-
+    demo( Q1,verdadeiro ).
+    demo( Q2,verdadeiro ).
+demoX( (Q1 xor Q2),verdadeiro ) :-
+    demo( Q1, verdadeiro ).
+    demo( Q2, falso ).
+demoX( (Q1 xor Q2),verdadeiro ) :-
+    demo( Q1, falso ).
+    demo( Q2, verdadeiro ).
+demoX( (Q1 xor Q2), desconhecido ).
+
+demoI( (Q1 => Q2),falso ) :-
+    demo( Q1,verdadeiro ),
+    demo(Q2, falso).
+demoI( (Q1 => Q2),verdadeiro ) :-
+    demo( Q1,falso ).
+demoI( (Q1 => Q2),verdadeiro ) :-
+    demo( Q2,verdadeiro ).
+demoI( (Q1 => Q2),desconhecido ).
+
+demoE( (Q1 <=> Q2),verdadeiro ) :-
+    demo( Q1,verdadeiro ).
+    demo( Q2,verdadeiro ).
+demoE( (Q1 <=> Q2),verdadeiro ) :-
+    demo( Q1,falso ).
+    demo( Q2,falso ).
+demoE( (Q1 <=> Q2),falso ) :-
+    demo( Q1,verdadeiro ).
+    demo( Q2,falso ).
+demoE( (Q1 <=> Q2),falso ) :-
+    demo( Q1,falso ).
+    demo( Q2,verdadeiro ).
+demoE( (Q1 <=> Q2),desconhecido ).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado demoLista: Lista, Lista resultado -> {V,F}
+
+demoLista( [],[] ).
+demoLista( [Q|Qs],[R|Rs] ) :-
+    demo( Q,R ),
+    demoLista( Qs,Rs ).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado demoListaConj: Lista, Resultado -> {V,F}
+
+demoListaConj( [Q],R ) :- demo( Q,R ).
+demoListaConj( [Q|Qs],R ) :-
+    demo( Q,R1 ),
+    demoListaConj( Qs,R2 ),
+    demo2((R1 and R2),R).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado conjuncao: Valor1, Valor2, Resultado -> {V,F}
+
+conjuncao( verdadeiro,verdadeiro,verdadeiro ).
+conjuncao( falso,falso,falso ).
+conjuncao( desconhecido,desconhecido,desconhecido ).
+conjuncao( verdadeiro,falso,falso ).
+conjuncao( verdadeiro,desconhecido,desconhecido ).
+conjuncao( falso,verdadeiro,falso ).
+conjuncao( falso,desconhecido,falso ).
+conjuncao( desconhecido,verdadeiro,desconhecido ).
+conjuncao( desconhecido,falso,falso ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
