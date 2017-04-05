@@ -417,21 +417,6 @@ demoListaConj( [Q|Qs],R ) :-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado conjuncao: Valor1, Valor2, Resultado -> {V,F}
-
-conjuncao( verdadeiro,verdadeiro,verdadeiro ).
-conjuncao( falso,falso,falso ).
-conjuncao( desconhecido,desconhecido,desconhecido ).
-conjuncao( verdadeiro,falso,falso ).
-conjuncao( verdadeiro,desconhecido,desconhecido ).
-conjuncao( falso,verdadeiro,falso ).
-conjuncao( falso,desconhecido,falso ).
-conjuncao( desconhecido,verdadeiro,desconhecido ).
-conjuncao( desconhecido,falso,falso ).
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado excecao: Termo -> {V,F}
 
 +excecao( T ) :: ( solucoes( T,excecao( T ),S ),
@@ -488,7 +473,7 @@ evolucao( Termo ) :-
 
 evolucaoIncerto( utente( ID,N,I,M ),idade ) :-
     nao( existeXPTO( I ) ),
-    evolucao(utente( ID,N,I,M )),
+    evolucao( utente( ID,N,I,M ) ),
     assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ).
 
 
@@ -497,13 +482,14 @@ evolucaoIncerto( utente( ID,N,I,M ),idade ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo impreciso
 
-evolucaoImpreciso( utente( ID,N,I,M ),unico ) :-
-    solucoes( INV,+utente::INV,LINV ),
-    insercao( utente( ID,N,I,M ) ),
-    testa( LINV ),
-    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ).
+evolucaoImpreciso( Termo ) :-
+    evolucao( excecao( Termo ) ).
+evolucaoImpreciso( utente( ID,N,I,M ),idade,Linf,Lsup ) :-
+    assert( ( excecao( utente( ID,N,I,M ) ) :- I >= Linf, I =< Lsup ) ).
 
 
+excecao( utente( 24,mauricio,I,lisboa ) ) :-
+    I >= 18, I =< 24.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
