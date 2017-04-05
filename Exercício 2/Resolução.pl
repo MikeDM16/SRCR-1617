@@ -20,9 +20,11 @@
 :- op(600,yfx,'=>' ).
 :- op(700,yfx,'<=>' ).
 :- dynamic utente/4.
-:- dynamic ato/4.
+:- dynamic ato/5.
 :- dynamic instituicao/2.
 :- dynamic cuidado/3.
+:- dynamic nulo/1.
+:- dynamic excecao/1.
 :- dynamic '-'/1.
 
 
@@ -85,10 +87,9 @@ utente( 25,trump,70,xpto006 ).
 excecao( utente( IDU,N,I,L ) ) :-
     utente( IDU,N,I,xpto006 ).
 nulo( xpto006 ).
-
 +utente( IDU,N,I,M ) :: ( solucoes( X,( utente( 25,_,_,X ),nao( nulo( X ) ) ),S ),
-                          comprimento( S,N ),
-                          N == 0 ).
+                          comprimento( S,L ),
+                          L == 0 ).
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -107,7 +108,7 @@ nulo( xpto006 ).
 
 % Garantir a consistênica de conhecimento: o Utente removido não pode ter atos associados
 
--utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,ID,_,_ ),S ),
+-utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,_,ID,_,_ ),S ),
                          comprimento( S,L ), 
                          L == 0 ).
 
@@ -179,7 +180,7 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
 
 % O Cuidado removido não pode ter atos medicos associados
 
--cuidado( ID,D,I ) :: ( solucoes( ID,ato( _,_,ID,_ ),S ),
+-cuidado( ID,D,I ) :: ( solucoes( ID,ato( _,_,_,ID,_ ),S ),
                         comprimento( S,L ),
                         L == 0 ).
 
@@ -236,70 +237,77 @@ excecao( instituicao( I,L ) ) :-
 
 % Conhecimento Perfeito Positivo
 
-ato( data( 1,2,1996 ),3,3,10 ).
-ato( data( 15,3,2017 ),1,2,15 ).
-ato( data( 17,4,1997 ),4,4,5 ).
-ato( data( 15,3,2007 ),1,5,0 ).
-ato( data( 15,3,2007 ),2,5,0 ).
-ato( data( 15,3,2007 ),3,2,0 ).
-ato( data( 16,3,2017 ),5,6,12 ).
-ato( data( 16,3,2007 ),6,9,20 ).
-ato( data( 16,3,2007 ),3,1,40 ).
+ato( 1,data( 1,2,1996 ),3,3,10 ).
+ato( 2,data( 15,3,2017 ),1,2,15 ).
+ato( 3,data( 17,4,1997 ),4,4,5 ).
+ato( 4,data( 15,3,2007 ),1,5,0 ).
+ato( 5,data( 15,3,2007 ),2,5,0 ).
+ato( 6,data( 15,3,2007 ),3,2,0 ).
+ato( 7,data( 16,3,2017 ),5,6,12 ).
+ato( 8,data( 16,3,2007 ),6,9,20 ).
+ato( 9,data( 16,3,2007 ),3,1,40 ).
 
 
 % Conhecimento Perfeito Negativo
 
--ato( data( D,M,2005 ),1,1,P ).
--ato( data( 31,8,2000 ),3,7,50 ).
+-ato( 20,data( D,M,2005 ),1,1,P ).
+-ato( 21,data( 31,8,2000 ),3,7,50 ).
 
 
 % Conhecimento Imperfeito Incerto
 
-ato( xpto004,6,2,80 ).
-excecao( ato( D,IDU,IdS,P ) ) :-
-    ato( xpto004,IDU,IdS,P ).
+ato( 22,xpto004,6,2,80 ).
+excecao( ato( ID,D,IDU,IdS,P ) ) :-
+    ato( ID,xpto004,IDU,IdS,P ).
 
-ato( data( xpto005,3,2007 ),5,3,20 ).
-excecao( ato( data( D,M,A ),IDU,IdS,P ) ) :-
-    ato( data( xpto005,M,A ),IDU,IdS,P ).
+ato( 23,data( xpto005,3,2007 ),5,3,20 ).
+excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
+    ato( ID,data( xpto005,M,A ),IDU,IdS,P ).
 
 
 % Conhecimento Imperfeito Impreciso
 
-excecao( ato( data(3,6,2007 ),6,9,P ) ) :-
+excecao( ato( 24,data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
 
 
 % Conhecimento Imperfeito Interdito
 
-ato( data(1,4,2017),25,10,xpto007 ).
-excecao( ato( D,IDU,IdS,P ) ) :-
-    ato( D,IDU,IdS,xpto007 ).
+ato( d25,ata(1,4,2017),25,10,xpto007 ).
+excecao( ato( ID,D,IDU,IdS,P ) ) :-
+    ato( ID,D,IDU,IdS,xpto007 ).
 nulo( xpto007 ).
 
-+ato( D,IDU,IdS,P ) :: ( solucoes( P,( ato( _,25,_,P ),nao( nulo( P ) ) ),S ),
++ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( _,_,25,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
--ato( D,IDU,IDS, C ) :- nao( ato( D,IDU,IDS, C )),
-                        nao( excecao( ato( D,IDU,IDS, C ) )).
+-ato( ID,D,IDU,IDS,C ) :- nao( ato( ID,D,IDU,IDS, C )),
+                          nao( excecao( ato( ID,D,IDU,IDS, C ) )).
+
+
+% Não permitir a insercao de conhecimento repetido
+
+-ato( ID,D,IDU,IDS,C ) :: ( solucoes( ID, ato( ID,_,_,_,_ ),S ),
+                            comprimento( S,L ), 
+                            L == 1 ).
 
 
 % Não permitir inserir atos com IdUt não registados
 
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
++ato( ID,D,IDU,IDS,C ) :: ( solucoes( IDU,utente( IDU,_,_,_ ),S ),
+                            comprimento( S,L ), 
+                            L == 1 ).
 
 
 % Não permitir inserir atos com IdServ não registados
 
-+ato( D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
++ato( ID,D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
+                            comprimento( S,L ), 
+                            L == 1 ).
 
 
 
@@ -424,53 +432,34 @@ conjuncao( desconhecido,falso,falso ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado excecao: Termo -> {V,F}
+
++excecao( T ) :: ( solucoes( T,excecao( T ),S ),
+                   comprimento( S,L ), 
+                   L == 1 ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado nulo: Termo -> {V,F}
+
++nulo( T ) :: ( solucoes( T,nulo( T ),S ),
+                comprimento( S,L ), 
+                L == 1 ).
+
+-nulo( T ) :: ( solucoes( T,nulo( T ),S ),
+                comprimento( S,L ), 
+                L == 1 ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do meta-predicado nao: Questao -> {V,F}
 
 nao( Questao ) :-
     Questao,
     !, fail.
 nao( Questao ).
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado concat: Lista1, Lista2, R -> {V,F}
-
-concat( [],L,L ).
-concat( [X|Xs],L2,[X|L] ) :-
-    concat( Xs,L2,L ).
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado tiraRepetidos: Lista, Resultado -> {V,F}
-
-tiraRepetidos([],[]).
-tiraRepetidos([H|Lista],Res) :-
-	eliminaElementos(H,Lista,R),
-	concat([H],Rn,Res),
-	tiraRepetidos(R,Rn).
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado eliminaElementos: Elemento, Lista, Resultado -> {V,F}
-
-eliminaElementos(X,[],[]).
-eliminaElementos(X,[X|T],R) :-
-	eliminaElementos(X,T,R).
-eliminaElementos(X,[H|T],[H|Z]) :-
-	X \== H,
-	eliminaElementos(X,T,Z).
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado pertence: Elem, Lista -> {V,F}
-
-pertence( X,[X|T] ).
-pertence( X,[H|T] ) :-
-    pertence( X,T ).
 
 
 
@@ -482,22 +471,37 @@ solucoes( X,Y,Z ) :-
 
 
 
-%---------------------------------- - - - - - - - - - -  -  -  -  -  -
-% Predicado «comprimento» que calcula o número de elementos
-% existentes numa lista
-
-comprimento( L,S ) :-
-    length( L,S ). 
-
-
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensão do predicado que permite a evolução do conhecimento
+% Extensão do predicado que permite a evolução de conhecimento
+% perfeito
 
 evolucao( Termo ) :-
     solucoes( INV,+Termo::INV,LINV ),
     insercao( Termo ),
     testa( LINV ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% imperfeito do tipo incerto
+
+evolucaoIncerto( utente( ID,N,I,M ),idade ) :-
+    nao( existeXPTO( I ) ),
+    evolucao(utente( ID,N,I,M )),
+    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% imperfeito do tipo impreciso
+
+evolucaoImpreciso( utente( ID,N,I,M ),unico ) :-
+    solucoes( INV,+utente::INV,LINV ),
+    insercao( utente( ID,N,I,M ) ),
+    testa( LINV ),
+    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ).
 
 
 
@@ -542,34 +546,20 @@ testa( [H|T] ) :-
     H,
     testa(T).
 
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensão do predicado que calcula a soma de um conjunto de valores
-
-somatorio([],0).
-somatorio([X|Y],N):- somatorio(Y,R), N is R+X. 
-
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensão do predicado que calcula o último elemento de uma lista
-
-ultimo([X|Xs], Last) :-  lastAux(Xs, X, Last).
-
-lastAux([], Last, Last).
-lastAux([X|Xs], _, Last) :- lastAux(Xs, X, Last).
+existeXPTO( XPTO ) :-
+    solucoes( XPTO,utente( _,XPTO,_,_ ),S1 ),
+    solucoes( XPTO,utente( _,_,XPTO,_ ),S2 ),
+    solucoes( XPTO,utente( _,_,_,XPTO ),S3 ),
+    comprimento( S1,L1 ),
+    comprimento( S2,L2 ),
+    comprimento( S3,L3 ),
+    L2 > 0.
 
 
 
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado maximo: Lista, Resultado -> {V,F}
-% Resultado é o maximo da lista de tuplos
+%---------------------------------- - - - - - - - - - -  -  -  -  -  -
+% Predicado «comprimento» que calcula o número de elementos
+% existentes numa lista
 
-tuploMaximo( [(X,Y)], (X,Y) ).
-tuploMaximo( [(X,Y)|T], (X,Y)) :- 
-    tuploMaximo(T, (XX,YY)),
-    Y > YY.
-tuploMaximo( [(X,Y)|T], (XX,YY)) :-
-    tuploMaximo(T, (XX,YY)),
-    Y =< YY.
+comprimento( L,S ) :-
+    length( L,S ). 
