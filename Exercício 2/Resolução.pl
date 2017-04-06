@@ -10,6 +10,7 @@
 :- set_prolog_flag( single_var_warnings,off ).
 :- set_prolog_flag( unknown,fail ).
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % SICStus PROLOG: definicoes iniciais
 
@@ -27,6 +28,64 @@
 :- dynamic excecao/1.
 :- dynamic '-'/1.
 :- dynamic '::'/2.
+:- dynamic counter_idu/1.
+:- dynamic counter_ids/1.
+:- dynamic counter_ida/1.
+:- dynamic counter_xpto/1.
+
+counter_idu(100).
+counter_ids(100).
+counter_ida(100).
+counter_xpto(48).
+
+increment( idu ) :-
+    retract( counter_idu( C ) ),
+    C1 is C + 1,
+    assert( counter_idu( C1 ) ) .
+increment( ids ) :-
+    retract( counter_ids( C ) ),
+    C1 is C + 1,
+    assert( counter_ids( C1 ) ) .
+increment( ida ) :-
+    retract( counter_ida( C ) ),
+    C1 is C + 1,
+    assert( counter_ida( C1 ) ) .
+increment( xpto ) :-
+    retract( counter_xpto( C ) ),
+    C1 is C + 1,
+    assert( counter_xpto( C1 ) ) .
+
+
+getIncXPTO( XPTO ) :-
+    increment( xpto ),
+    counter_xpto( XPTO2 ),
+    name( XPTO,[120,112,116,111,XPTO2] ).
+
+getIncIDU( IDU ) :-
+    increment( idu ),
+    counter_idu( IDU ).
+
+getIncIDS( IDS ) :-
+    increment( ids ),
+    counter_ids( IDS ).
+
+getIncIDA( IDA ) :-
+    increment( ida ),
+    counter_ida( IDA ).
+
+
+getXPTO( XPTO ) :-
+    counter_xpto( XPTO2 ),
+    name( XPTO,[120,112,116,111,XPTO2] ).
+
+getIDU( IDU ) :-
+    counter_idu( IDU ).
+
+getIDS( IDS ) :-
+    counter_ids( IDS ).
+
+getIDA( IDA ) :-
+    counter_ida( IDA ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -274,12 +333,12 @@ excecao( ato( 24,data(3,6,2007 ),6,9,P ) ) :-
 
 % Conhecimento Imperfeito Interdito
 
-ato( d25,ata(1,4,2017),25,10,xpto007 ).
+ato( 25,data(1,4,2017),25,10,xpto007 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,D,IDU,IdS,xpto007 ).
 nulo( xpto007 ).
 
-+ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( _,_,25,_,P ),nao( nulo( P ) ) ),S ),
++ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 25,_,_,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
 
@@ -306,10 +365,9 @@ nulo( xpto007 ).
 
 % Não permitir inserir atos com IdServ não registados
 
-+ato( ID,D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_,_ ),S ),
++ato( ID,D,IDU,IDS,C ) :: ( solucoes( IDS,cuidado( IDS,_,_ ),S ),
                             comprimento( S,L ), 
                             L == 1 ).
-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -472,10 +530,77 @@ evolucao( Termo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo incerto
 
-evolucaoIncerto( utente( ID,N,I,M ),idade ) :-
-    nao( existeXPTO( I ) ),
-    evolucao( utente( ID,N,I,M ) ),
-    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ).
+evolucaoIncerto( utente( N,I,M ),[P|Ps] ) :-
+    insereUtente( utente( N,I,M ),[P|Ps],[] ).
+evolucaoIncerto( cuidado( D,I ),[P|Ps] ) :-
+    insereCuidado( cuidado( D,I ),[P|Ps],[] ).
+evolucaoIncerto( instituicao( D,C ),[P|Ps] ) :-
+    insereInstituicao( instituicao( D,C ),[P|Ps],[] ).
+evolucaoIncerto( ato( D,IDU,IDS,C ),[P|Ps] ) :-
+    insereAto( ato( D,IDU,IDS,C ),[P|Ps],[] ).
+
+insereUtente( utente( N,I,M ),[],LEXC ) :-
+    getIncIDU( IDU ),
+    evolucao( utente( IDU,N,I,M ) ),
+    insertAll( LEXC ).
+insereUtente( utente( N,I,M ),[idade|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU ))],LEXC,LEXC1 ),
+    insereUtente( utente( N,XPTO,M ),T,LEXC1 ).
+insereUtente( utente( N,I,M ),[nome|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU ))],LEXC,LEXC1 ),
+    insereUtente( utente( N,XPTO,M ),T,LEXC1 ).
+insereUtente( utente( N,I,M ),[morada|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO ))],LEXC,LEXC1 ),
+    insereUtente( utente( N,XPTO,M ),T,LEXC1 ).
+
+insereCuidado( cuidado( D,I ),[],LEXC ) :-
+    getIncIDS( IDS ),
+    evolucao( cuidado( IDS,D,I ) ),
+    insertAll( LEXC ).
+insereCuidado( cuidado( D,I ),[descricao|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( cuidado( IDSC,DC,IC ) ) :- cuidado( IDSC,XPTO,IC ))],LEXC,LEXC1 ),
+    insereCuidado( cuidado( XPTO,I ),T,LEXC1 ).
+insereCuidado( cuidado( D,I ),[instituicao|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( cuidado( IDSC,DC,IC ) ) :- cuidado( IDSC,DC,XPTO ))],LEXC,LEXC1 ),
+    insereCuidado( cuidado( D,XPTO ),T,LEXC1 ).
+
+insereInstituicao( instituicao( D,C ),[],LEXC ) :-
+    evolucao( instituicao( D,C ) ),
+    insertAll( LEXC ).
+insereInstituicao( instituicao( D,C ),[descricao|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( instituicao( DI,CI ) ) :- instituicao( XPTO,CI ))],LEXC,LEXC1 ),
+    insereInstituicao( instituicao( XPTO,C ),T,LEXC1 ).
+insereInstituicao( instituicao( D,C ),[cidade|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( instituicao( DI,CI ) ) :- instituicao( CI,XPTO ))],LEXC,LEXC1 ),
+    insereInstituicao( instituicao( CI,XPTO ),T,LEXC1 ).
+
+insereAto( ato( D,IDU,IDS,C ),[],LEXC ) :-
+    getIncIDA( IDA ),
+    evolucao( ato( IDA,D,IDU,IDS,C ) ),
+    insertAll( LEXC ).
+insereAto( ato( D,IDU,IDS,C ),[data|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDUA,IDSA,CA ))],LEXC,LEXC1 ),
+    insereAto( ato( XPTO,IDU,IDS,C ),T,LEXC1 ).
+insereAto( ato( D,IDU,IDS,C ),[utente|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDSA,CA ))],LEXC,LEXC1 ),
+    insereAto( ato( D,XPTO,IDS,C ),T,LEXC1 ).
+insereAto( ato( D,IDU,IDS,C ),[cuidado|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,XPTO,CA ))],LEXC,LEXC1 ),
+    insereAto( ato( D,IDU,XPTO,C ),T,LEXC1 ).
+insereAto( ato( D,IDU,IDS,C ),[custo|T],LEXC ) :-
+    getIncXPTO( XPTO ),
+    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,IDSA,XPTO ))],LEXC,LEXC1 ),
+    insereAto( ato( D,IDU,IDS,XPTO ),T,LEXC1 ).
 
 
 
@@ -496,15 +621,56 @@ evolucaoImpreciso( ato( ID,D,IDU,IDS,C ),custo,Linf,Lsup ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo interdito
 
-evolucaoInterdito( utente( ID,N,I,M ),idade ) :-
-    nao( existeXPTO( I ) ),
-    evolucao( utente( ID,N,I,M ) ),
-    assert( ( excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,I,MU ) ) ),
-    assert( nulo( I ) ),
-    assert( ( +utente( IDU,NU,IU,MU ) :: ( solucoes( X,( utente( ID,_,X,_ ),nao( nulo( X ) ) ),S ),
-                                           comprimento( S,L ),
-                                           L == 0 ) ) ).
+evolucaoInterdito( utente( N,I,M ),[P|Ps] ) :-
+    insereUtente2( utente( N,I,M ),[P|Ps],[],[],[] ).
 
+
+insereUtente2( utente( N,I,M ),[],LEXC,LNUL,LINV ) :-
+    getIncIDU( IDU ),
+    evolucao( utente( IDU,N,I,M ) ),
+    insertAll( LEXC ),
+    insertAll( LNUL ),
+    insertAll( LINV ).
+insereUtente2( utente( N,I,M ),[idade|T],LEXC,LNUL,LINV ) :-
+    getIncXPTO( XPTO ),
+    getIDU( IDAA ),
+    IDA is IDAA + 1,
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU ))],LEXC,LEXC1 ),
+    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
+    criaInvarianteUtente( IDA,XPTO,idade,LINV,LINV1 ),
+    insereUtente2( utente( N,XPTO,M ),T,LEXC1,LNUL1,LINV1 ).
+insereUtente2( utente( N,I,M ),[nome|T],LEXC,LNUL,LINV ) :-
+    getIncXPTO( XPTO ),
+    getIDU( IDAA ),
+    IDA is IDAA + 1,
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU ))],LEXC,LEXC1 ),
+    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
+    criaInvarianteUtente( IDA,XPTO,nome,LINV,LINV1 ),
+    insereUtente2( utente( XPTO,I,M ),T,LEXC1,LNUL1,LINV1 ).
+insereUtente2( utente( N,I,M ),[morada|T],LEXC,LNUL,LINV ) :-
+    getIncXPTO( XPTO ),
+    getIDU( IDAA ),
+    IDA is IDAA + 1,
+    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO ))],LEXC,LEXC1 ),
+    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
+    criaInvarianteUtente( IDA,XPTO,morada,LINV,LINV1 ),
+    insereUtente2( utente( XPTO,I,M ),T,LEXC1,LNUL1,LINV1 ).
+
+
+criaInvarianteUtente( IDU,XPTO,idade,L,LINV ) :-
+    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,_,XPTO,_ ),nao( nulo( XPTO ) ) ),S ),
+                                        comprimento( S,L ),
+                                        L == 0 ) )],L,LINV).
+criaInvarianteUtente( IDU,XPTO,nome,L,LINV ) :-
+    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,XPTO,_,_ ),nao( nulo( XPTO ) ) ),S ),
+                                        comprimento( S,L ),
+                                        L == 0 ) )],L,LINV).
+criaInvarianteUtente( IDU,XPTO,morada,L,LINV ) :-
+    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,_,_,XPTO ),nao( nulo( XPTO ) ) ),S ),
+                                        comprimento( S,L ),
+                                        L == 0 ) )],L,LINV).
+
+                                    
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
@@ -547,20 +713,30 @@ testa( [H|T] ) :-
     H,
     testa(T).
 
-existeXPTO( XPTO ) :-
-    solucoes( XPTO,utente( _,XPTO,_,_ ),S1 ),
-    solucoes( XPTO,utente( _,_,XPTO,_ ),S2 ),
-    solucoes( XPTO,utente( _,_,_,XPTO ),S3 ),
-    comprimento( S1,L1 ),
-    comprimento( S2,L2 ),
-    comprimento( S3,L3 ),
-    L2 > 0.
 
 
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de uma lista de Termos
+
+insertAll( [] ).
+insertAll( [H|T] ) :-
+    assert( H ),
+    insertAll( T ).
+    
+    
 
 %---------------------------------- - - - - - - - - - -  -  -  -  -  -
 % Predicado «comprimento» que calcula o número de elementos
 % existentes numa lista
 
 comprimento( L,S ) :-
-    length( L,S ). 
+    length( L,S ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado concat: Lista1, Lista2, R -> {V,F}
+
+concat( [],L,L ).
+concat( [X|Xs],L2,[X|L] ) :-
+    concat( Xs,L2,L ).
