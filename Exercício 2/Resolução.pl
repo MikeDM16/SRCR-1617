@@ -137,7 +137,6 @@ excecao( utente( 23,joana,22,guimaraes ) ).
 excecao( utente( 24,mauricio,I,lisboa ) ) :-
     I >= 18, I =< 24.
 
-
 % -------  Conhecimento Imprefeito Interdito ------%
 
 %%  O utente com o IdUt 25, de nome trump, com 70 anos,
@@ -151,13 +150,12 @@ nulo( xpto006 ).
                           comprimento( S,L ),
                           L == 0 ).
 
-
+      
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -utente( IDU,N,I,M ) :-
     nao( utente( IDU,N,I,M ) ),
     nao( excecao( utente( IDU,N,I,M ) ) ).
-
 
 
 % Garantir a consistênica de conhecimento: o Utente removido não pode ter atos associados
@@ -511,7 +509,6 @@ solucoes( X,Y,Z ) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
-% perfeito
 
 evolucao( Termo ) :-
     solucoes( INV,+Termo::INV,LINV ),
@@ -522,271 +519,109 @@ evolucao( Termo ) :-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
-% imperfeito do tipo incerto
+% perfeito positivo
 
-evolucaoIncerto( utente( N,I,M ),[P|Ps] ) :-
-    getIncIDU( IDU ),
-    insereUtente( utente( IDU,N,I,M ),[P|Ps],[],[] ).
-evolucaoIncerto( cuidado( D,I ),[P|Ps] ) :-
-    getIncIDS( IDS ),
-    insereCuidado( cuidado( IDS,D,I ),[P|Ps],[],[] ).
-evolucaoIncerto( instituicao( D,C ),[P|Ps] ) :-
-    insereInstituicao( instituicao( D,C ),[P|Ps],[],[] ).
-evolucaoIncerto( ato( D,IDU,IDS,C ),[P|Ps] ) :-
-    getIncIDA( IDA ),
-    insereAto( ato( IDA,D,IDU,IDS,C ),[P|Ps],[],[] ).
-
-insereUtente( utente( ID,N,I,M ),[],LPRE,LEXC ) :-
-    concat( LPRE,LEXC,L ),
-    inserir( L ).
-insereUtente( utente( ID,N,I,M ),[nome|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [utente( ID,XPTO,I,M)],LPRE,LPRE1 ),
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,I,M ))],LEXC,LEXC1 ),
-    insereUtente( utente( ID,N,I,M ),T,LPRE1,LEXC1 ).
-insereUtente( utente( ID,N,I,M ),[idade|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [utente( ID,N,XPTO,M)],LPRE,LPRE1 ),
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,N,XPTO,M ))],LEXC,LEXC1 ),
-    insereUtente( utente( ID,N,I,M ),T,LPRE1,LEXC1 ).
-insereUtente( utente( ID,N,I,M ),[morada|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [utente( ID,N,I,XPTO)],LPRE,LPRE1 ),
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,N,I,XPTO ))],LEXC,LEXC1 ),
-    insereUtente( utente( ID,N,I,M ),T,LPRE1,LEXC1 ).
-
-insereCuidado( cuidado( ID,D,I ),[],LPRE,LEXC ) :-
-    concat( LPRE,LEXC,L ),
-    inserir( L ).
-insereCuidado( cuidado( ID,D,I ),[descricao|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [cuidado( ID,XPTO,I)],LPRE,LPRE1 ),
-    concat( [(excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,XPTO,I ))],LEXC,LEXC1 ),
-    insereCuidado( cuidado( ID,D,I ),T,LPRE1,LEXC1 ).
-insereCuidado( cuidado( ID,D,I ),[instituicao|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [cuidado( ID,D,XPTO)],LPRE,LPRE1 ),
-    concat( [(excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,D,XPTO ))],LEXC,LEXC1 ),
-    insereCuidado( cuidado( ID,D,I ),T,LPRE1,LEXC1 ).
-
-insereInstituicao( instituicao( D,C ),[],LPRE,LEXC ) :-
-    concat( LPRE,LEXC,L ),
-    inserir( L ).
-insereInstituicao( instituicao( D,C ),[cidade|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [instituicao( D,XPTO )],LPRE,LPRE1 ),
-    concat( [(excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO ))],LEXC,LEXC1 ),
-    insereInstituicao( instituicao( D,I ),T,LPRE1,LEXC1 ).
-
-insereAto( ato( ID,D,IDU,IDS,C ),[],LPRE,LEXC ) :-
-    concat( LPRE,LEXC,L ),
-    inserir( L ).
-insereAto( ato( ID,D,IDU,IDS,C ),[data|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [ato( ID,XPTO,IDU,IDS,C )],LPRE,LPRE1 ),
-    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDU,IDS,C ))],LEXC,LEXC1 ),
-    insereAto( ato( ID,D,IDU,IDS,C ),T,LPRE1,LEXC1 ).
-insereAto( ato( ID,D,IDU,IDS,C ),[utente|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [ato( ID,D,XPTO,IDS,C )],LPRE,LPRE1 ),
-    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDS,C ))],LEXC,LEXC1 ),
-    insereAto( ato( ID,D,IDU,IDS,C ),T,LPRE1,LEXC1 ).
-insereAto( ato( ID,D,IDU,IDS,C ),[cuidado|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [ato( ID,D,IDU,XPTO,C )],LPRE,LPRE1 ),
-    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,D,IDU,XPTO,C ))],LEXC,LEXC1 ),
-    insereAto( ato( ID,D,IDU,IDS,C ),T,LPRE1,LEXC1 ).
-insereAto( ato( ID,D,IDU,IDS,C ),[custo|T],LPRE,LEXC ) :-
-    getIncXPTO( XPTO ),
-    concat( [ato( ID,D,IDU,IDS,XPTO )],LPRE,LPRE1 ),
-    concat( [(excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,D,IDU,IDS,XPTO ))],LEXC,LEXC1 ),
-    insereAto( ato( ID,D,IDU,IDS,C ),T,LPRE1,LEXC1 ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
-% imperfeito do tipo impreciso
+% perfeito partindo de conhecimento imperfeito incerto
 
-evolucaoImpreciso( utente( N,I,M ),E,[P|Ps] ) :-
-    getIncIDU( IDU ),
-    insereUtente2( utente( IDU,N,I,M ),E,[P|Ps],[]).
-evolucaoImpreciso( cuidado( D,I ),[P|Ps] ) :-
-    getIncIDS( IDS ),
-    insereCuidado2( cuidado( IDS,D,I ),E,[P|Ps],[]).
-evolucaoImpreciso( instituicao( D,C ),E,[P|Ps] ) :-
-    insereInstituicao2( instituicao( D,C ),E,[P|Ps],[]).
-evolucaoImpreciso( ato( D,IDU,IDS,C ),E,[P|Ps] ) :-
-    getIncIDA( IDA ),
-    insereAto2( ato( IDA,D,IDU,IDS,C ),E,[P|Ps],[]).
+evolucaoFromIncerto( utente( ID,N,I,M ) ) :-
+    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,X,IU,MU )),(utente( ID,X,I,M ),nao( nulo( X ) ) ),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    removeAll( LEXC ),
+    removeUtente( ID ),
+    evolucao( utente( ID,N,I,M ) ).
+evolucaoFromIncerto( utente( ID,N,I,M ) ) :-
+    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,X,MU )),(utente( ID,N,X,M ),nao( nulo( X ) ) ),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    removeAll( LEXC ),
+    removeUtente( ID ),
+    evolucao( utente( ID,N,I,M ) ).
+evolucaoFromIncerto( utente( ID,N,I,M ) ) :-
+    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,X )),(utente( ID,N,I,X ),nao( nulo( X ) ) ),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    removeAll( LEXC ),
+    removeUtente( ID ),
+    evolucao( utente( ID,N,I,M ) ).
 
-evolucaoImprecisoInt( utente( N,I,M ),idade,Linf,Lsup ) :-
-    getIncIDU( ID ),
-    evolucao( ( excecao( utente( ID,N,IS,M ) ) :- IS >= Linf, IS =< Lsup ) ).
-evolucaoImprecisoInt( ato( ID,D,IDU,IDS,C ),custo,Linf,Lsup ) :-
-    getIncIDA( IDA ),
-    evolucao( ( excecao( ato( IDA, D,IDU,IDS,CS ) ) :- CS >= Linf, CS =< Lsup ) ).
 
-insereUtente2( utente( ID,N,I,M ),P,[],LEXC) :-
-    inserir( LEXC).
-insereUtente2( utente( ID,N,I,M ),nome,[H|T],LEXC ) :-
-    concat( [(excecao(utente( ID,H,I,M)) )],LEXC,LEXC1 ),
-    insereUtente2( utente( ID,N,I,M ),nome,T,LEXC1 ).
-insereUtente2( utente( ID,N,I,M ),idade,[H|T],LEXC ) :-
-    concat( [(excecao(utente( ID,N,H,M)))],LEXC,LEXC1 ),
-    insereUtente2( utente( ID,N,I,M ),idade,T,LEXC1 ).
-insereUtente2( utente( ID,N,I,M ),morada,[H|T],LEXC ) :-
-    concat( [(excecao(utente( ID,N,I,H)))],LEXC,LEXC1 ),
-    insereUtente2( utente( ID,N,I,M ),morada,T,LEXC1 ).
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% perfeito partindo de conhecimento imperfeito impreciso
 
-insereCuidado2( cuidado( ID,D,I ),P,[],LEXC) :-
-    inserir( LEXC).
-insereCuidado2( cuidado( ID,D,I ),descricao,[H|T],LEXC ) :-
-    concat( [(excecao(cuidado( ID,H,I)) )],LEXC,LEXC1 ),
-    insereCuidado2( cuidado( ID,D,I),descricao,T,LEXC1 ).
-insereCuidado2( cuidado( ID,D,I ),instituicao,[H|T],LEXC ) :-
-    concat( [(excecao(cuidado( ID,D,H)))],LEXC,LEXC1 ),
-    insereCuidado2( cuidado( ID,D,I),instituicao,T,LEXC1 ).
 
-insereInstituicao2( instituicao( D,C ),P,[],LEXC) :-
-    inserir( LEXC).
-insereInstituicao2( instituicao(D,C),descricao,[H|T],LEXC ) :-
-    concat( [(excecao(instituicao(H,C)) )],LEXC,LEXC1 ),
-    insereInstituicao2( instituicao(D,C),descricao,T,LEXC1 ).
-insereInstituicao2( instituicao( D,C ),cidade,[H|T],LEXC ) :-
-    concat( [(excecao(instituicao(D,H)))],LEXC,LEXC1 ),
-    insereInstituicao2( instituicao(D,C),instituicao,T,LEXC1 ).
+evolucaoFromImpreciso( utente( ID,N,I,M ),nome ) :-
+    solucoes( (excecao( utente( ID,X,I,M ) )),(excecao( utente( ID,X,I,M ) )),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
+    removeAll( LEXC ),
+    evolucao( utente( ID,N,I,M ) ).
+evolucaoFromImpreciso( utente( ID,N,I,M ),idade ) :-
+    solucoes( (excecao( utente( ID,N,X,M ) )),(excecao( utente( ID,N,X,M ) )),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
+    removeAll( LEXC ),
+    evolucao( utente( ID,N,I,M ) ).
+evolucaoFromImpreciso( utente( ID,N,I,M ),morada ) :-
+    solucoes( (excecao( utente( ID,N,I,X) )),(excecao( utente( ID,N,I,X ) )),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
+    removeAll( LEXC ),
+    evolucao( utente( ID,N,I,M ) ).
+evolucaoFromImpreciso( utente( ID,N,I,M ),idadeI ) :-
+    solucoes( ((excecao( utente( ID,N,X,M) ) :- X >= LI, X =< LS)),(excecao( utente( ID,N,I,M) )),LEXC ),
+    comprimento( LEXC,S ),
+    S > 0,
+    removeAll( LEXC ),
+    evolucao( utente( ID,N,I,M ) ).
 
-insereAto2( ato( ID,D,IDU,IDS,C ),P,[],LEXC) :-
-    inserir( LEXC).
-insereAto2( ato( ID,D,IDU,IDS,C ),data,[H|T],LEXC ) :-
-    concat( [(excecao(ato( ID,H,IDU,IDS,C )))],LEXC,LEXC1 ),
-    insereAto2(ato( ID,D,IDU,IDS,C ),data,T,LEXC1 ).
-insereAto2( ato( ID,D,IDU,IDS,C ),utente,[H|T],LEXC ) :-
-    concat( [(excecao(ato( ID,D,H,IDS,C )))],LEXC,LEXC1 ),
-    insereAto2(ato( ID,D,IDU,IDS,C ),utente,T,LEXC1 ).
-insereAto2( ato( ID,D,IDU,IDS,C ),cuidado,[H|T],LEXC ) :-
-    concat( [(excecao(ato( ID,D,IDU,H,C )))],LEXC,LEXC1 ),
-    insereAto2(ato( ID,D,IDU,IDS,C ),cuidado,T,LEXC1 ).
-insereAto2( ato( ID,D,IDU,IDS,C ),custo,[H|T],LEXC ) :-
-    concat( [(excecao(ato( ID,D,IDU,IDS,H )))],LEXC,LEXC1 ),
-    insereAto2(ato( ID,D,IDU,IDS,C ),custo,T,LEXC1 ).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% perfeito partindo de conhecimento imperfeito interdito
+
+evolucaoFromInterdito(T) :- fail.
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% imperfeito do tipo incerto
+
+evolucaoIncerto( Termo,LEXC ) :-
+    evolucao( Termo ), 
+    insertAll( LEXC ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% imperfeito do tipo imperfeito
+
+evolucaoImpreciso( LEXC ) :-
+    insertAll( LEXC ).
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo interdito
 
-evolucaoInterdito( utente( N,I,M ),[P|Ps] ) :-
-    getIncIDU( IDU ),
-    insereUtente3( utente( IDU,N,I,M ),[P|Ps],[],[],[] ).
-evolucaoInterdito( instituicao( D,C ),[P|Ps] ) :-
-    insereInstituicao3( instituicao( D,C ),[P|Ps],[],[],[] ).
-evolucaoInterdito( cuidado( D,Ins), [P|Ps] ) :-
-    getIncIDA( IDA ),
-    insereCuidado3( cuidado( D,Ins ),[P|Ps],[],[],[] ).
-
-
-insereUtente3( utente( N,I,M ),[],LEXC,LNUL,LINV ) :-
-    getIncIDU( IDU ),
-    evolucao( utente( IDU,N,I,M ) ),
+evolucaoInterdito( Termo,LEXC,LNUL,LINV ) :-
+    evolucao( Termo ), 
     insertAll( LEXC ),
     insertAll( LNUL ),
     insertAll( LINV ).
-insereUtente3( utente( N,I,M ),[idade|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    getIDU( IDAA ),
-    IDA is IDAA + 1,
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU ))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteUtente( IDA,XPTO,idade,LINV,LINV1 ),
-    insereUtente3( utente( N,XPTO,M ),T,LEXC1,LNUL1,LINV1 ).
-insereUtente3( utente( N,I,M ),[nome|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    getIDU( IDAA ),
-    IDA is IDAA + 1,
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU ))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteUtente( IDA,XPTO,nome,LINV,LINV1 ),
-    insereUtente3( utente( XPTO,I,M ),T,LEXC1,LNUL1,LINV1 ).
-insereUtente3( utente( N,I,M ),[morada|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    getIDU( IDAA ),
-    IDA is IDAA + 1,
-    concat( [(excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO ))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteUtente( IDA,XPTO,morada,LINV,LINV1 ),
-    insereUtente3( utente( N,I,XPTO ),T,LEXC1,LNUL1,LINV1 ).
 
-criaInvarianteUtente( IDU,XPTO,idade,L,LINV ) :-
-    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,_,XPTO,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-criaInvarianteUtente( IDU,XPTO,nome,L,LINV ) :-
-    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,XPTO,_,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-criaInvarianteUtente( IDU,XPTO,morada,L,LINV ) :-
-    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,_,_,XPTO ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-
-
-insereInstituicao3( instituicao( D,C ),[],LEXC,LNUL,LINV ) :-
-    evolucao( instituicao( D,C ) ),
-    insertAll( LEXC ),
-    insertAll( LNUL ),
-    insertAll( LINV ).
-insereInstituicao3( instituicao( D,C ),[cidade|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    concat( [(excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO ))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteInstituicao( D,XPTO,cidade,LINV,LINV1),
-    insereInstituicao2( instituicao( D,XPTO ),T,LEXC1,LNUL1,LINV1 ).
-
-criaInvarianteUtente( IDU,XPTO,idade,L,LINV ) :-
-    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,_,XPTO,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-criaInvarianteUtente( IDU,XPTO,nome,L,LINV ) :-
-    concat( [( +utente( ID,N,I,M ) :: ( solucoes( X,( utente( IDU,XPTO,_,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-criaInvarianteInstituicao( D,XPTO,cidade,L,LINV ) :-
-    concat( [( +instituicao( D,C ) :: ( solucoes( X,( instituicao( D,XPTO ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-
-
-insereCuidado3( cuidado( D,Ins ),[],LEXC,LNUL,LINV ) :-
-    getIncIDS( IDS ),
-    evolucao( cuidado( IDS, D,Ins ) ),
-    insertAll( LEXC ),
-    insertAll( LNUL ),
-    insertAll( LINV ).
-insereCuidado3( cuidado( D,Ins ),[descricao|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    getIDS( IDAA ),
-    IDA is IDAA + 1,
-    concat( [(excecao( cuidado(IDS, DS, InsS) ) :- cuidado(IDS,XPTO,InsS))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteCuidado( IDA,XPTO,descricao,LINV,LINV1 ),
-    insereCuidado2( cuidado( XPTO,Ins ),T,LEXC1,LNUL1,LINV1 ).
-insereCuidado3( cuidado( D,Ins ),[instituicao|T],LEXC,LNUL,LINV ) :-
-    getIncXPTO( XPTO ),
-    getIDS( IDAA ),
-    IDA is IDAA + 1,
-    concat( [(excecao( cuidado(IDS, DS, InsS ) ) :- cuidado(IDS,DS, XPTO ))],LEXC,LEXC1 ),
-    concat( [(nulo( XPTO ))],LNUL,LNUL1 ),
-    criaInvarianteCuidado( IDA,XPTO,instituicao,LINV,LINV1 ),
-    insereCuidado2( cuidado( D,XPTO ),T,LEXC1,LNUL1,LINV1 ).
-
-criaInvarianteCuidado( IDU,XPTO,descricao,L,LINV ) :-
-    concat( [( +cuidado( ID,D,I,C ) :: ( solucoes( X,( cuidado( IDU,XPTO,_,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
-criaInvarianteCuidado( IDU,XPTO,instituicao,L,LINV ) :-
-    concat( [( +cuidado( ID,D,I,C ) :: ( solucoes( X,( cuidado( IDU,_,XPTO,_ ),nao( nulo( XPTO ) ) ),S ),
-                                        comprimento( S,L ),
-                                        L == 0 ) )],L,LINV).
                                     
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -835,23 +670,21 @@ testa( [H|T] ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de uma lista de Termos
 
-inserir( L1 ) :-
-    insertAll( L1,[] ).
-
-
-insertAll( [],_ ).
-insertAll( [H|T],L ) :-
+insertAll( [] ).
+insertAll( [H|T] ) :-
     assert( H ),
-    concat( [H],L,L1 ),
-    insertAll( T,L1 ).
-insertAll( L1,L2 ) :-
-    removeAll( L2 ), !, fail.
+    insertAll( T ).
 
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de uma lista de Termos
 
 removeAll( [] ).
 removeAll( [H|T] ) :-
     retract( H ),
     removeAll( T ).
+
 
 
 %---------------------------------- - - - - - - - - - -  -  -  -  -  -
@@ -869,3 +702,24 @@ comprimento( L,S ) :-
 concat( [],L,L ).
 concat( [X|Xs],L2,[X|L] ) :-
     concat( Xs,L2,L ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado pertence: Elemento, Lista -> {V,F}
+
+pertence( X,[X|L] ).
+pertence( X,[Y|L] ) :-
+    X \= Y,
+    pertence( X,L ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removeUtente: IDU -> {V,F}
+
+removeUtente( ID ) :-
+    solucoes( utente( IDU,NU,IU,MU ),utente( ID,NU,IU,MU ),LUT ),
+    comprimento( LUT,L ),
+    L > 0,
+    removeAll( LUT ).
