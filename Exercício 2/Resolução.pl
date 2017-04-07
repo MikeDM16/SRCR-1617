@@ -137,7 +137,7 @@ excecao( utente( 23,joana,22,guimaraes ) ).
 excecao( utente( 24,mauricio,I,lisboa ) ) :-
     I >= 18, I =< 24.
 
-% -------  Conhecimento Imprefeito Interdito ------%
+% -------  Conhecimento Imperfeito Interdito ------%
 
 %%  O utente com o IdUt 25, de nome trump, com 70 anos,
 %%  exige que não se saiba a sua morada.
@@ -157,6 +157,11 @@ nulo( xpto006 ).
     nao( utente( IDU,N,I,M ) ),
     nao( excecao( utente( IDU,N,I,M ) ) ).
 
+% Impedir conhecimento repetido
+
++utente( ID,N,I,M ) :: ( solucoes( ID, utente( ID,N,I,M),S ),
+                         comprimento( S,L ), 
+                         L == 1 ).
 
 % Garantir a consistênica de conhecimento: o Utente removido não pode ter atos associados
 
@@ -211,9 +216,9 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
     nao( excecao( cuidado( IdS,D,I ) ) ).
 
 
-% Não permitir a insercao de cuidados com o mesmo identificador
+% Impedir conhecimento repetido
 
-+cuidado( ID,D,I ) :: ( solucoes( ID,cuidado( ID,_,_ ),S ),
++cuidado( ID,D,I ) :: ( solucoes( ID,cuidado( ID,D,I ),S ),
                         comprimento( S,L ), 
                         L == 1 ).
 
@@ -268,7 +273,7 @@ excecao( instituicao( I,L ) ) :-
                        nao( excecao( instituicao( N,C ))).
 
 
-% Não permitir a insercao de instituição com o mesmo nome
+% Impedir conhecimento repetido
 
 +instituicao( I,C ) :: ( solucoes( I,instituicao( I,_ ),S ),
                          comprimento( S,L ), 
@@ -343,7 +348,7 @@ nulo( xpto007 ).
 
 % Não permitir a insercao de conhecimento repetido
 
--ato( ID,D,IDU,IDS,C ) :: ( solucoes( ID, ato( ID,_,_,_,_ ),S ),
++ato( ID,D,IDU,IDS,C ) :: ( solucoes( ID, ato( ID,D,IDU,IDS,C ),S ),
                             comprimento( S,L ), 
                             L == 1 ).
 
