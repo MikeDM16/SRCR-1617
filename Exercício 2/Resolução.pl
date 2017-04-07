@@ -521,6 +521,24 @@ evolucao( Termo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito positivo
 
+evolucaoPositivo( Termo ) :-
+    solucoes( X,(-Termo),L ),
+    comprimento( L,S ),
+    S < 2,
+    evolucao( Termo ).
+
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensão do predicado que permite a evolução de conhecimento
+% perfeito positivo
+
+evolucaoNegativo( -Termo ) :-
+    solucoes( X,(Termo),L ),
+    comprimento( L,S ),
+    S == 0,
+    evolucao( -Termo ).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
