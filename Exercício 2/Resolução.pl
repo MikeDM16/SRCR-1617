@@ -545,36 +545,20 @@ evolucaoFromIncerto( utente( ID,N,I,M ) ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito partindo de conhecimento imperfeito impreciso
 
-
-evolucaoFromImpreciso( utente( ID,N,I,M ),nome ) :-
-    solucoes( (excecao( utente( ID,X,I,M ) )),(excecao( utente( ID,X,I,M ) )),LEXC ),
-    comprimento( LEXC,S ),
-    S > 0,
-    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
-    removeAll( LEXC ),
-    evolucao( utente( ID,N,I,M ) ).
-evolucaoFromImpreciso( utente( ID,N,I,M ),idade ) :-
-    solucoes( (excecao( utente( ID,N,X,M ) )),(excecao( utente( ID,N,X,M ) )),LEXC ),
-    comprimento( LEXC,S ),
-    S > 0,
-    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
-    removeAll( LEXC ),
-    evolucao( utente( ID,N,I,M ) ).
-evolucaoFromImpreciso( utente( ID,N,I,M ),morada ) :-
-    solucoes( (excecao( utente( ID,N,I,X) )),(excecao( utente( ID,N,I,X ) )),LEXC ),
-    comprimento( LEXC,S ),
-    S > 0,
-    pertence( (excecao( utente( ID,N,I,M ) )),LEXC ),
-    removeAll( LEXC ),
-    evolucao( utente( ID,N,I,M ) ).
-evolucaoFromImpreciso( utente( ID,N,I,M ),idadeI ) :-
+evolucaoFromImpreciso( utente( ID,N,I,M )) :-
     solucoes( ((excecao( utente( ID,N,X,M) ) :- X >= LI, X =< LS)),(excecao( utente( ID,N,I,M) )),LEXC ),
     comprimento( LEXC,S ),
     S > 0,
     removeAll( LEXC ),
     evolucao( utente( ID,N,I,M ) ).
 
-
+evolucaoFromImpreciso( utente( ID,N,I,M )) :-
+    solucoes( (excecao( utente( ID,NU,IU,MU ))),(excecao( utente( ID,NU,IU,MU ))),LEXC ),
+    comprimento( LEXC,S ),
+	S > 0,
+    pertence( (excecao( utente( ID,N,I,M ) )), LEXC),
+    removeAll( LEXC ),
+    evolucao( utente( ID,N,I,M ) ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
@@ -699,10 +683,10 @@ concat( [X|Xs],L2,[X|L] ) :-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado pertence: Elemento, Lista -> {V,F}
 
-pertence( X,[X|L] ).
+pertence( X,[X|L]).
 pertence( X,[Y|L] ) :-
     X \= Y,
-    pertence( X,L ).
+    pertence( X,L).
 
 
 
