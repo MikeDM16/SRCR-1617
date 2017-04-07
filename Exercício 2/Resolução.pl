@@ -157,12 +157,6 @@ nulo( xpto006 ).
     nao( utente( IDU,N,I,M ) ),
     nao( excecao( utente( IDU,N,I,M ) ) ).
 
-% Impedir conhecimento repetido
-
-+utente( ID,N,I,M ) :: ( solucoes( ID, utente( ID,N,I,M),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
-
 % Garantir a consistênica de conhecimento: o Utente removido não pode ter atos associados
 
 -utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,_,ID,_,_ ),S ),
@@ -216,13 +210,6 @@ excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
     nao( excecao( cuidado( IdS,D,I ) ) ).
 
 
-% Impedir conhecimento repetido
-
-+cuidado( ID,D,I ) :: ( solucoes( ID,cuidado( ID,D,I ),S ),
-                        comprimento( S,L ), 
-                        L == 1 ).
-
-
 % Não permitir a insercao de cuidados repetidos numa instituição
 
 +cuidado( ID,D,I ) :: ( solucoes( D,cuidado( _,D,I ),S ),
@@ -271,14 +258,6 @@ excecao( instituicao( I,L ) ) :-
 
 -instituicao( N,C ) :- nao( instituicao( N,C ) ), 
                        nao( excecao( instituicao( N,C ))).
-
-
-% Impedir conhecimento repetido
-
-+instituicao( I,C ) :: ( solucoes( I,instituicao( I,_ ),S ),
-                         comprimento( S,L ), 
-                         L == 1 ).
-
 
 % Não permite remoção se estiver associado algum cuidado prestado
 
@@ -344,14 +323,6 @@ nulo( xpto007 ).
 
 -ato( ID,D,IDU,IDS,C ) :- nao( ato( ID,D,IDU,IDS, C )),
                           nao( excecao( ato( ID,D,IDU,IDS, C ) )).
-
-
-% Não permitir a insercao de conhecimento repetido
-
-+ato( ID,D,IDU,IDS,C ) :: ( solucoes( ID, ato( ID,D,IDU,IDS,C ),S ),
-                            comprimento( S,L ), 
-                            L == 1 ).
-
 
 % Não permitir inserir atos com IdUt não registados
 
@@ -527,11 +498,9 @@ evolucao( Termo ) :-
 % perfeito positivo
 
 evolucaoPositivo( Termo ) :-
-    solucoes( X,(-Termo),L ),
-    comprimento( L,S ),
-    S < 2,
+	naoExisteNT(-Termo),
+   	naoExiste(Termo),
     evolucao( Termo ).
-
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -539,9 +508,8 @@ evolucaoPositivo( Termo ) :-
 % perfeito positivo
 
 evolucaoNegativo( -Termo ) :-
-    solucoes( X,(Termo),L ),
-    comprimento( L,S ),
-    S == 0,
+	naoExiste(Termo),
+    naoExisteNT(-Termo),
     evolucao( -Termo ).
 
 
@@ -746,3 +714,45 @@ removeUtente( ID ) :-
     comprimento( LUT,L ),
     L > 0,
     removeAll( LUT ).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado naoExiste: IDU -> {V,F}
+
+naoExiste(utente(ID,N,I,M)) :-
+	solucoes( ID, utente(ID,NU,IU,MU), L),
+    comprimento( L,S ),
+   	S == 0.
+naoExiste(instituicao(D,I)) :-
+	solucoes( D, utente(D,I), L),
+    comprimento( L,S ),
+   	S == 0.
+naoExiste(cuidado(ID,D,I)) :-
+	solucoes( ID, cuidado(ID,DC,IC), L),
+    comprimento( L,S ),
+   	S == 0.
+naoExiste(ato(ID,D,IDC,IDS,C)):-
+	solucoes( ID, ato(ID,DA,IDCA,IDSA,CA), L),
+    comprimento( L,S ),
+   	S == 0.
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado naoExisteNT: IDU -> {V,F}
+
+naoExisteNT(-utente(ID,N,I,M)) :-
+	solucoes( ID, -utente(ID,NU,IU,MU), L),
+    comprimento( L,S ),
+   	S < 2.
+naoExisteNT(-instituicao(D,I)) :-
+	solucoes( D, -utente(D,I), L),
+    comprimento( L,S ),
+   	S < 2.
+naoExisteNT(-cuidado(ID,D,I)) :-
+	solucoes( ID, -cuidado(ID,DC,IC), L),
+    comprimento( L,S ),
+   	S < 2.
+naoExisteNT(-ato(ID,D,IDC,IDS,C)):-
+	solucoes( ID, -ato(ID,DA,IDCA,IDSA,CA), L),
+    comprimento( L,S ),
+   	S < 2.
+
