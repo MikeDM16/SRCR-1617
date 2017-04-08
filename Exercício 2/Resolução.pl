@@ -196,6 +196,10 @@ cuidado( 20,pediatria,xpto003 ).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,D,xpto003 ).
 
+cuidado( 200,xpto0033,instituicao( hsjoao,porto )).
+excecao( cuidado( IdS,D,I ) ) :-
+    cuidado( IdS,xpto0033,I ).
+
 
 % Conhecimento Imperfeito Impreciso
 
@@ -253,6 +257,11 @@ instituicao( hsmaria,xpto002 ).
 excecao( instituicao( I,L ) ) :-
     instituicao( I,xpto002 ).
 
+% Conhecimento Imperfeito Impreciso
+
+excecao(instituicao(hsjose,braga)).
+excecao(instituicao(hsjose,porto)).
+
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
@@ -296,6 +305,10 @@ ato( 22,xpto004,6,2,80 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,xpto004,IDU,IdS,P ).
 
+ato( 220,data(3,6,2007 ),6,2,xpto040 ).
+excecao( ato( ID,D,IDU,IDS,P ) ) :-
+    ato( ID,D,IDU,IDS, xpto040).
+
 ato( 23,data( xpto005,3,2007 ),5,3,20 ).
 excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
     ato( ID,data( xpto005,M,A ),IDU,IdS,P ).
@@ -306,6 +319,9 @@ excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
 excecao( ato( 24,data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
 
+
+excecao( ato( 240,data(3,6,2007 ),6,9,20 ) ).
+excecao( ato( 240,data(3,6,2007 ),6,9,30) ).
 
 % Conhecimento Imperfeito Interdito
 
@@ -492,8 +508,8 @@ evolucao( Termo ) :-
     testa( LINV ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensão do predicado que permite a evolução de conhecimento
-% perfeito partindo de conhecimento imperfeito impreciso
+% Extensão do predicado que permite a evolução de conhecimento perfeito
+% partindo de conhecimento imperfeito impreciso do utente
 
 evoluirConhecimento( utente( ID,N,I,M )) :-
 	demo(utente(ID,N,I,M),desconhecido),
@@ -509,9 +525,43 @@ evoluirConhecimento( utente( ID,N,I,M )) :-
     removeAll( LEXC ),
     evolucao( utente( ID,N,I,M ) ).
 
+% partindo de conhecimento imperfeito impreciso do cuidado
+
+evoluirConhecimento( cuidado( ID,D,I )) :-
+	demo(cuidado( ID,D,I ), desconhecido),
+    solucoes( (excecao( cuidado( ID,DC,IC ))),(excecao( cuidado( ID,DC,IC ))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( cuidado( ID,D,I )).
+
+% partindo de conhecimento imperfeito impreciso da instituicao
+
+evoluirConhecimento( instituicao( D,I )) :-
+	demo(instituicao( D,I ), desconhecido),
+    solucoes( (excecao( instituicao( D,II ))),(excecao( instituicao( D,II ))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    assert(instituicao( D,I )).
+
+% partindo de conhecimento imperfeito impreciso do ato
+
+evoluirConhecimento(ato( ID,D,IDU,IDC,C)) :-
+	demo(ato( ID,D,IDU,IDC,C),desconhecido),
+    solucoes( ((excecao( ato( ID,D,IDU,IDC,X) ) :- X >= LI, X =< LS)),(excecao( ato( ID,D,IDU,IDC,C))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( ato( ID,D,IDU,IDC,C)).
+
+evoluirConhecimento( ato( ID,D,IDU,IDC,C)) :-
+	demo(ato( ID,D,IDU,IDC,C), desconhecido),
+    solucoes( (excecao( ato( ID,DA,IDA,IDSA,CA))),(excecao( ato( ID,DA,IDA,IDSA,CA))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( ato( ID,D,IDU,IDC,C)).
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensão do predicado que permite a evolução de conhecimento
-% perfeito partindo de conhecimento imperfeito incerto
+% Extensão do predicado que permite a evolução de conhecimento perfeito
+% partindo de conhecimento imperfeito incerto do utente
 
 evoluirConhecimento( utente( ID,N,I,M ) ) :-
 	demo(utente(ID,N,I,M),desconhecido),
@@ -534,6 +584,68 @@ evoluirConhecimento( utente( ID,N,I,M ) ) :-
     removeAll( LEXC ),
     removeUtente( ID ),
     evolucao( utente( ID,N,I,M ) ).
+
+% partindo de conhecimento imperfeito incerto do cuidado
+
+evoluirConhecimento( cuidado( ID,D,I )) :-
+	demo(cuidado( ID,D,I ),desconhecido),
+    solucoes( (excecao( cuidado( IDC,DC,IC) ) :- cuidado( IDC,X,IC)),(cuidado( ID,X,I ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeCuidado( ID ),
+    evolucao( cuidado( ID,D,I ) ).
+evoluirConhecimento( cuidado( ID,D,I )) :-
+	demo(cuidado( ID,D,I ),desconhecido),
+    solucoes( (excecao( cuidado( IDC,DC,IC) ) :- cuidado( IDC,DC,X)),(cuidado( ID,D,X ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeCuidado( ID ),
+    evolucao( cuidado( ID,D,I ) ).
+
+% partindo de conhecimento imperfeito incerto da instituicao
+
+evoluirConhecimento( instituicao( D,I)) :-
+	demo(instituicao(D,I),desconhecido),
+    solucoes( (excecao( instituicao( DD,II) ) :- instituicao( D,II)),(instituicao( D,II),nao( nulo( II ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeInst( D ),
+    evolucao( instituicao( D,I)).
+
+% partindo de conhecimento imperfeito incerto do ato
+
+evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
+	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,X,IDAU,IDAS,CA)),( ato( ID,X,IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao( ato( ID,D,IDU,IDS,C )  ).
+
+evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
+	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,X,IDAS,CA)),( ato( ID,D,X,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao( ato( ID,D,IDU,IDS,C )  ).
+
+evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
+	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,IDAU,X,CA)),( ato( ID,D,IDU,X,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao( ato( ID,D,IDU,IDS,C )  ).
+
+evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
+	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,IDAU,IDAS,X)),( ato( ID,D,IDU,IDS,X),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao( ato( ID,D,IDU,IDS,C )  ).
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
@@ -559,23 +671,46 @@ evoluirConhecimento( -Termo ) :-
     evolucao(-Termo).
 
 
-
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo incerto
 
-evolucaoIncerto( Termo,LEXC ) :-
-    evolucao( Termo ), 
-    insertAll( LEXC ).
+
+insercaoIncerto( utente( ID,I,M ),nome ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,XPTO,I,M ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU )) ).
+insercaoIncerto( utente( ID,N,M ),idade ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,N,XPTO,M ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU )) ).
+insercaoIncerto( utente( ID,N,I ),morada ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,N,I,XPTO ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO )) ).
+
 
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
-% imperfeito do tipo imperfeito
+% imperfeito do tipo impreciso
 
-evolucaoImpreciso( LEXC ) :-
-    insertAll( LEXC ).
+insercaoImpreciso( utente( ID,N,[I1 - I2],M ) ) :-
+    evolucao( (excecao( utente( ID,N,I,M ) ) :- I >= I1, I =< I2) ).
+insercaoImpreciso( utente( ID,[],I,M ) ).
+insercaoImpreciso( utente( ID,N,[],M ) ).
+insercaoImpreciso( utente( ID,N,I,[] ) ).
+insercaoImpreciso( utente( ID,[N|NS],I,M ) ) :-
+    evolucao( excecao( utente( ID,N,I,M ) ) ),
+    insercaoImpreciso( utente( ID,NS,I,M ) ).
+insercaoImpreciso( utente( ID,N,[I|IS],M ) ) :-
+    evolucao( excecao( utente( ID,N,I,M ) ) ),
+    insercaoImpreciso( utente( ID,N,IS,M ) ).
+insercaoImpreciso( utente( ID,N,I,[M|MS] ) ) :-
+    evolucao( excecao( utente( ID,N,I,M ) ) ),
+    insercaoImpreciso( utente( ID,N,I,MS ) ).
+
 
 
 
@@ -583,13 +718,31 @@ evolucaoImpreciso( LEXC ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo interdito
 
-evolucaoInterdito( Termo,LEXC,LNUL,LINV ) :-
-    evolucao( Termo ), 
-    insertAll( LEXC ),
-    insertAll( LNUL ),
-    insertAll( LINV ).
-
-                                    
+insercaoInterdito( utente( ID,I,M ),nome ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,XPTO,I,M ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,X,_,_ ),nao( nulo( X ) )),S ),
+                                           comprimento( S,L ),
+                                           L == 0 )) ).
+insercaoInterdito( utente( ID,I,M ),idade ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,N,XPTO,M ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,X,_ ),nao( nulo( X ) )),S ),
+                                           comprimento( S,L ),
+                                           L == 0 )) ).
+insercaoInterdito( utente( ID,I,M ),morada ) :-
+    getIncXPTO( XPTO ),
+    evolucao( utente( ID,N,I,XPTO ) ),
+    evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,_,X ),nao( nulo( X ) )),S ),
+                                           comprimento( S,L ),
+                                           L == 0 )) ).
+                                                                            
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
@@ -692,6 +845,34 @@ removeUtente( ID ) :-
     removeAll( LUT ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removeCuidado: IDC -> {V,F}
+
+removeCuidado( ID ) :-
+    solucoes( cuidado( IDC,DC,IC),cuidado( ID,DC,IC),LC ),
+    comprimento( LC,L ),
+    L > 0,
+    removeAll( LC).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removeInst: D,I -> {V,F}
+
+removeInst( D) :-
+    solucoes( instituicao(DI,II),instituicao( D,II),LI),
+    comprimento( LI,L ),
+    L > 0,
+    removeAll( LI).
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+% Extensao do predicado removeCuidado: IDA -> {V,F}
+
+removeAto( ID ) :-
+    solucoes( ato( IDA,DA,IC,IS,C),ato( ID,DA,IC,IS,C),LA ),
+    comprimento( LA,L ),
+    L > 0,
+    removeAll( LA).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado naoExiste: ID -> {V,F}
 
 naoExiste(utente(ID,N,I,M)) :-
@@ -733,12 +914,24 @@ naoExisteNT(-ato(ID,D,IDC,IDS,C)):-
    	S < 2.
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado naoExisteNT: ID -> {V,F}
+% Extensao do predicado existeE: ID -> {V,F}
 
 existeE(utente(ID,N,I,M)) :-
 	retract((excecao(utente(ID,N,X,M)):- X>=Y,X=<Z)),
 	assert((excecao(utente(ID,N,X,M)):- X>=Y,X=<Z)).
+existeE(utente(ID,N,I,M)) :-
+	solucoes( (excecao( utente( ID,NU,IU,MU ))),(excecao( utente( ID,NU,IU,MU ))),LEXC ),
+    comprimento(LEXC,S), S > 0.
+existeE(cuidado(ID,D,I)) :-
+	solucoes( (excecao(cuidado(ID,DC,IC))),(excecao(cuidado(ID,DC,IC))),LEXC ),
+    comprimento(LEXC,S), S > 0.
+existeE(instituicao(D,I)) :-
+	solucoes( (excecao(instituicao(D,II))),(excecao(instituicao(D,II))),LEXC ),
+    comprimento(LEXC,S), S > 0.
 existeE(ato(ID,D,IDU,IDS,C)) :-
 	retract((excecao(ato(ID,D,IDU,IDS,X)):- X>=Y,X=<Z)),
 	assert((excecao(ato(ID,D,IDU,IDS,X)):- X>=Y,X=<Z)).
+existeE(ato(ID,D,IDU,IDS,C)) :-
+	solucoes( (excecao( ato(ID,DA,IDA,IDSA,CA))),(excecao(ato(ID,DA,IDA,IDSA,CA))),LEXC ),
+    comprimento(LEXC,S), S > 0.
 
