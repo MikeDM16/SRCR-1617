@@ -547,6 +547,27 @@ evoluirConhecimento( instituicao( D,I )) :-
 
 % partindo de conhecimento imperfeito impreciso do ato
 
+evoluirConhecimento(ato( ID,data( D,M,A ),IDU,IDC,C)) :-
+	demo(ato( ID,data( D,M,A ),IDU,IDC,C),desconhecido),
+    solucoes( ((excecao( ato( ID,data( X,M,A ),IDU,IDC,C) ) :- X >= LI, X =< LS)),(excecao( ato( ID,data( D,M,A),IDU,IDC,C))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( ato( ID,data( D,M,A ),IDU,IDC,C)).
+
+evoluirConhecimento(ato( ID,data( D,M,A ),IDU,IDC,C)) :-
+	demo(ato( ID,data( D,M,A ),IDU,IDC,C),desconhecido),
+    solucoes( ((excecao( ato( ID,data( D,X,A ),IDU,IDC,C) ) :- X >= LI, X =< LS)),(excecao( ato( ID,data( D,M,A),IDU,IDC,C))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( ato( ID,data( D,M,A ),IDU,IDC,C)).
+
+evoluirConhecimento(ato( ID,data( D,M,A ),IDU,IDC,C)) :-
+	demo(ato( ID,data( D,M,A ),IDU,IDC,C),desconhecido),
+    solucoes( ((excecao( ato( ID,data( D,M,X ),IDU,IDC,C) ) :- X >= LI, X =< LS)),(excecao( ato( ID,data( D,M,A),IDU,IDC,C))),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    evolucao( ato( ID,data( D,M,A ),IDU,IDC,C)).
+
 evoluirConhecimento(ato( ID,D,IDU,IDC,C)) :-
 	demo(ato( ID,D,IDU,IDC,C),desconhecido),
     solucoes( ((excecao( ato( ID,D,IDU,IDC,X) ) :- X >= LI, X =< LS)),(excecao( ato( ID,D,IDU,IDC,C))),LEXC ),
@@ -797,23 +818,40 @@ insercaoImpreciso( instituicao( D,[C|CS] ) ) :-
 
 insercaoImpreciso( ato( ID,D,IDU,IDS,[C1 - C2] ) ) :-
     evolucao( (excecao( ato( ID,D,IDU,IDS,C ) ) :- C >= C1, C =< C2) ).
+insercaoImpreciso( ato( ID,data( [D1 - D2],M,A ),IDU,IDS,C ) ) :-
+    evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- D >= D1, D =< D2) ).
+insercaoImpreciso( ato( ID,data( D,[M1 - M2],A ),IDU,IDS,C ) ) :-
+    evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- M >= M1, M =< M2) ).
+insercaoImpreciso( ato( ID,data( D,M,[A1 - A2] ),IDU,IDS,C ) ) :-
+    evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- A >= A1, A =< A2) ).
 insercaoImpreciso( ato( ID,[],IDU,IDS,C ) ).
 insercaoImpreciso( ato( ID,D,[],IDS,C ) ).
 insercaoImpreciso( ato( ID,D,IDU,[],C ) ).
 insercaoImpreciso( ato( ID,D,IDU,IDS,[] ) ).
+insercaoImpreciso( ato( ID,data( [],M,A ),IDU,IDS,C ) ).
+insercaoImpreciso( ato( ID,data( D,[],A ),IDU,IDS,C ) ).
+insercaoImpreciso( ato( ID,data( D,M,[] ),IDU,IDS,C ) ).
 insercaoImpreciso( ato( ID,[D|DS],IDU,IDS,C ) ) :-
-    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( cuidado( ID,DS,IDU,IDS,C ) ).
+    evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,DS,IDU,IDS,C ) ).
 insercaoImpreciso( ato( ID,D,[IDU|IDUS],IDS,C ) ) :-
-    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( cuidado( ID,D,IDUS,IDS,C ) ).
+    evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,D,IDUS,IDS,C ) ).
 insercaoImpreciso( ato( ID,D,IDU,[IDS|IDSS],C ) ) :-
-    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( cuidado( ID,D,IDU,IDSS,C ) ).
+    evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,D,IDU,IDSS,C ) ).
 insercaoImpreciso( ato( ID,D,IDU,IDS,[C|CS] ) ) :-
-    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( cuidado( ID,D,IDU,IDS,CS ) ).
-%insercaoImpreciso( ato( ID,data))
+    evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,D,IDU,IDS,CS ) ).
+insercaoImpreciso( ato( ID,data( [D|DS],M,A ),IDU,IDS,C ) ) :-
+    evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,data( DS,M,A ) ),IDU,IDS,C ).
+insercaoImpreciso( ato( ID,data( D,[M|MS],A ),IDU,IDS,C ) ) :-
+    evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,data( D,MS,A ) ),IDU,IDS,C ).
+insercaoImpreciso( ato( ID,data( D,M,[A|AS] ),IDU,IDS,C ) ) :-
+    evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
+    insercaoImpreciso( ato( ID,data( D,M,AS ) ),IDU,IDS,C ).
 
 
 
