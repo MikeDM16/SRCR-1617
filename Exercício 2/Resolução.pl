@@ -204,7 +204,7 @@ excecao( cuidado( IdS,D,I ) ) :-
 % Conhecimento Imperfeito Impreciso
 
 excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
-excecao( cuidado( 21,oftalmologia,instituicao( hsporto,porto ) ) ).
+excecao( cuidado( 21,oftalmologia,instituicao( hporto,porto ) ) ).
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -567,21 +567,21 @@ evoluirConhecimento( ato( ID,D,IDU,IDC,C)) :-
 
 evoluirConhecimento( utente( ID,N,I,M ) ) :-
 	demo(utente(ID,N,I,M),desconhecido),
-    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,X,IU,MU )),(utente( ID,X,I,M ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao( utente( ID,N,I,M ) ) :- utente( ID,X,I,M )),(utente( ID,X,I,M ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeUtente( ID ),
     evolucao( utente( ID,N,I,M ) ).
 evoluirConhecimento( utente( ID,N,I,M ) ) :-
     demo(utente(ID,N,I,M),desconhecido),
-    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,X,MU )),(utente( ID,N,X,M ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao( utente( ID,N,I,M ) ) :- utente( ID,N,X,M )),(utente( ID,N,X,M ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeUtente( ID ),
     evolucao( utente( ID,N,I,M ) ).
 evoluirConhecimento( utente( ID,N,I,M ) ) :-
     demo(utente(ID,N,I,M),desconhecido),
-    solucoes( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,X )),(utente( ID,N,I,X ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao( utente( ID,N,I,M ) ) :- utente( ID,N,I,X )),(utente( ID,N,I,X ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeUtente( ID ),
@@ -591,14 +591,14 @@ evoluirConhecimento( utente( ID,N,I,M ) ) :-
 
 evoluirConhecimento( cuidado( ID,D,I )) :-
 	demo(cuidado( ID,D,I ),desconhecido),
-    solucoes( (excecao( cuidado( IDC,DC,IC) ) :- cuidado( IDC,X,IC)),(cuidado( ID,X,I ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao( cuidado( ID,D,I) ) :- cuidado( ID,X,I)),(cuidado( ID,X,I ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeCuidado( ID ),
     evolucao( cuidado( ID,D,I ) ).
 evoluirConhecimento( cuidado( ID,D,I )) :-
 	demo(cuidado( ID,D,I ),desconhecido),
-    solucoes( (excecao( cuidado( IDC,DC,IC) ) :- cuidado( IDC,DC,X)),(cuidado( ID,D,X ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao( cuidado( ID,D,I) ) :- cuidado( ID,D,X)),(cuidado( ID,D,X ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeCuidado( ID ),
@@ -608,7 +608,7 @@ evoluirConhecimento( cuidado( ID,D,I )) :-
 
 evoluirConhecimento( instituicao( D,I)) :-
 	demo(instituicao(D,I),desconhecido),
-    solucoes( (excecao( instituicao( DD,II) ) :- instituicao( D,II)),(instituicao( D,II),nao( nulo( II ) ) ),LEXC ),
+    solucoes( (excecao( instituicao( D,X) ) :- instituicao( D,X)),(instituicao( D,X),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeInst( D ),
@@ -616,9 +616,33 @@ evoluirConhecimento( instituicao( D,I)) :-
 
 % partindo de conhecimento imperfeito incerto do ato
 
+evoluirConhecimento( ato( ID,data(D,M,A),IDU,IDS,C ) ) :-
+    demo(  ato( ID,data(D,M,A),IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(   ato( ID,data(D,M,A),IDU,IDS,C ) ) :- ato( ID,data(X,M,A),IDU,IDS,C )),(  ato( ID,data(X,M,A),IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao(  ato( ID,data(D,M,A),IDU,IDS,C ) ).
+
+evoluirConhecimento( ato( ID,data(D,M,A),IDU,IDS,C ) ) :-
+    demo(  ato( ID,data(D,M,A),IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(   ato( ID,data(D,M,A),IDU,IDS,C ) ) :- ato( ID,data(D,X,A),IDU,IDS,C )),(  ato( ID,data(D,X,A),IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao(  ato( ID,data(D,M,A),IDU,IDS,C ) ).
+
+evoluirConhecimento( ato( ID,data(D,M,A),IDU,IDS,C ) ) :-
+    demo(  ato( ID,data(D,M,A),IDU,IDS,C ),desconhecido),
+    solucoes( (excecao(   ato( ID,data(D,M,A),IDU,IDS,C ) ) :- ato( ID,data(D,M,X),IDU,IDS,C )),(  ato( ID,data(D,M,X),IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    comprimento(LEXC,S), S > 0,
+    removeAll( LEXC ),
+    removeAto( ID ),
+    evolucao(  ato( ID,data(D,M,A),IDU,IDS,C ) ).
+
 evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
-    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,X,IDAU,IDAS,CA)),( ato( ID,X,IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao(  ato( ID,D,IDU,IDS,C ) ) :-  ato( ID,X,IDU,IDS,C)),( ato( ID,X,IDU,IDS,C ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeAto( ID ),
@@ -626,7 +650,7 @@ evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 
 evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
-    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,X,IDAS,CA)),( ato( ID,D,X,IDS,C ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao(  ato( ID,D,IDU,IDS,C ) ) :-  ato( ID,D,X,IDS,C)),( ato( ID,D,X,IDS,C ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeAto( ID ),
@@ -634,7 +658,7 @@ evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 
 evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
-    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,IDAU,X,CA)),( ato( ID,D,IDU,X,C ),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao(  ato( ID,D,IDU,IDS,C ) ) :-  ato( ID,D,IDU,X,C)),( ato( ID,D,IDU,X,C ),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeAto( ID ),
@@ -642,7 +666,7 @@ evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 
 evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 	demo( ato( ID,D,IDU,IDS,C ),desconhecido),
-    solucoes( (excecao(  ato( IDA,DA,IDAU,IDAS,CA ) ) :-  ato( IDA,DA,IDAU,IDAS,X)),( ato( ID,D,IDU,IDS,X),nao( nulo( X ) ) ),LEXC ),
+    solucoes( (excecao(  ato( ID,D,IDU,IDS,C ) ) :-  ato( ID,D,IDU,IDS,X)),( ato( ID,D,IDU,IDS,X),nao( nulo( X ) ) ),LEXC ),
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     removeAto( ID ),
@@ -707,6 +731,18 @@ insercaoIncerto( instituicao( D ),cidade ) :-
     evolucao( instituicao( D,XPTO ) ),
     evolucao( (excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO )) ).
 
+insercaoIncerto( ato( ID,data( M,A ),IDU,IDS,C ),dia ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,data(XPTO,M,A),IDU,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(XPTO,MA,AA),IDUA,IDSA,CA )) ).
+insercaoIncerto( ato( ID,data( D,A) ,IDU,IDS,C ),mes ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,data(D,XPTO,A),IDU,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(DA,XPTO,AA),IDUA,IDSA,CA )) ).
+insercaoIncerto( ato( ID,data( D,M ),IDU,IDS,C ),ano ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,data(D,M,XPTO),IDU,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(DA,MA,XPTO),IDUA,IDSA,CA )) ).
 insercaoIncerto( ato( ID,IDU,IDS,C ),data ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,XPTO,IDU,IDS,C ) ),
@@ -777,6 +813,7 @@ insercaoImpreciso( ato( ID,D,IDU,[IDS|IDSS],C ) ) :-
 insercaoImpreciso( ato( ID,D,IDU,IDS,[C|CS] ) ) :-
     evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
     insercaoImpreciso( cuidado( ID,D,IDU,IDS,CS ) ).
+%insercaoImpreciso( ato( ID,data))
 
 
 
