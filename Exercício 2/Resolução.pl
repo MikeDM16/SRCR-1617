@@ -680,7 +680,6 @@ evoluirConhecimento( -Termo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo incerto
 
-
 insercaoIncerto( utente( ID,I,M ),nome ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,XPTO,I,M ) ),
@@ -694,6 +693,36 @@ insercaoIncerto( utente( ID,N,I ),morada ) :-
     evolucao( utente( ID,N,I,XPTO ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO )) ).
 
+insercaoIncerto( cuidado( ID,I ),descricao ) :-
+    getIncXPTO( XPTO ),
+    evolucao( cuidado( ID,XPTO,I ) ),
+    evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,XPTO,IC )) ).
+insercaoIncerto( cuidado( ID,D ),instituicao ) :-
+    getIncXPTO( XPTO ),
+    evolucao( cuidado( ID,D,XPTO ) ),
+    evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,DC,XPTO )) ).
+
+insercaoIncerto( instituicao( D ),cidade ) :-
+    getIncXPTO( XPTO ),
+    evolucao( instituicao( D,XPTO ) ),
+    evolucao( (excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO )) ).
+
+insercaoIncerto( ato( ID,IDU,IDS,C ),data ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,XPTO,IDU,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDUA,IDSA,CA )) ).
+insercaoIncerto( ato( ID,D,IDS,C ),utente ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,XPTO,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDSA,CA )) ).
+insercaoIncerto( ato( ID,D,IDU,C ),cuidado ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,IDU,XPTO,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,XPTO,CA )) ).
+insercaoIncerto( ato( ID,D,IDS,C ),custo ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,IDU,IDS,XPTO ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,IDSA,XPTO )) ).
 
 
 
@@ -716,6 +745,38 @@ insercaoImpreciso( utente( ID,N,I,[M|MS] ) ) :-
     evolucao( excecao( utente( ID,N,I,M ) ) ),
     insercaoImpreciso( utente( ID,N,I,MS ) ).
 
+insercaoImpreciso( cuidado( ID,[],I ) ).
+insercaoImpreciso( cuidado( ID,D,[] ) ).
+insercaoImpreciso( cuidado( ID,[D|DS],I ) ) :-
+    evolucao( excecao( cuidado( ID,D,I ) ) ),
+    insercaoImpreciso( cuidado( ID,DS,I ) ).
+insercaoImpreciso( cuidado( ID,D,[I|IS] ) ) :-
+    evolucao( excecao( cuidado( ID,D,I ) ) ),
+    insercaoImpreciso( cuidado( ID,D,IS ) ).
+
+insercaoImpreciso( instituicao( D,[] ) ).
+insercaoImpreciso( instituicao( D,[C|CS] ) ) :-
+    evolucao( excecao( instituicao( D,C ) ) ),
+    insercaoImpreciso( instituicao( D,CS ) ).
+
+insercaoImpreciso( ato( ID,D,IDU,IDS,[C1 - C2] ) ) :-
+    evolucao( (excecao( ato( ID,D,IDU,IDS,C ) ) :- C >= C1, C =< C2) ).
+insercaoImpreciso( ato( ID,[],IDU,IDS,C ) ).
+insercaoImpreciso( ato( ID,D,[],IDS,C ) ).
+insercaoImpreciso( ato( ID,D,IDU,[],C ) ).
+insercaoImpreciso( ato( ID,D,IDU,IDS,[] ) ).
+insercaoImpreciso( ato( ID,[D|DS],IDU,IDS,C ) ) :-
+    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( cuidado( ID,DS,IDU,IDS,C ) ).
+insercaoImpreciso( ato( ID,D,[IDU|IDUS],IDS,C ) ) :-
+    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( cuidado( ID,D,IDUS,IDS,C ) ).
+insercaoImpreciso( ato( ID,D,IDU,[IDS|IDSS],C ) ) :-
+    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( cuidado( ID,D,IDU,IDSS,C ) ).
+insercaoImpreciso( ato( ID,D,IDU,IDS,[C|CS] ) ) :-
+    evolucao( excecao( cuidado( ID,D,IDU,IDS,C ) ) ),
+    insercaoImpreciso( cuidado( ID,D,IDU,IDS,CS ) ).
 
 
 
@@ -747,6 +808,65 @@ insercaoInterdito( utente( ID,I,M ),morada ) :-
     evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,_,X ),nao( nulo( X ) )),S ),
                                            comprimento( S,L ),
                                            L == 0 )) ).
+
+insercaoInterdito( cuidado( ID,I ),descricao ) :-
+    getIncXPTO( XPTO ),
+    evolucao( cuidado( ID,XPTO,I ) ),
+    evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,XPTO,IC )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+cuidado( IDC,DC,IC ) :: (solucoes( X,(cuidado( ID,X,_ ),nao( nulo( X ) )),S ),
+                                         comprimento( S,L ),
+                                         L == 0 )) ).
+insercaoInterdito( cuidado( ID,D ),instituicao ) :-
+    getIncXPTO( XPTO ),
+    evolucao( cuidado( ID,D,XPTO ) ),
+    evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,DC,XPTO )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+cuidado( IDC,DC,IC ) :: (solucoes( X,(cuidado( ID,_,X ),nao( nulo( X ) )),S ),
+                                         comprimento( S,L ),
+                                         L == 0 )) ).
+
+insercaoInterdito( instituicao( D ),cidade ) :-
+    getIncXPTO( XPTO ),
+    evolucao( instituicao( D,XPTO ) ),
+    evolucao( (excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+instituicao( DI,CI ) :: (solucoes( X,(instituicao( DI,X ),nao( nulo( X ) )),S ),
+                                         comprimento( S,L ),
+                                         L == 0 )) ).
+
+insercaoInterdito( ato( ID,IDU,IDS,C ),data ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,XPTO,IDU,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDUA,IDSA,CA )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,X,_,_,_ ),nao( nulo( X ) )),S ),
+                                               comprimento( S,L ),
+                                               L == 0 )) ).
+insercaoInterdito( ato( ID,D,IDS,C ),utente ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,XPTO,IDS,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDSA,CA )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,_,X,_,_ ),nao( nulo( X ) )),S ),
+                                               comprimento( S,L ),
+                                               L == 0 )) ).
+insercaoInterdito( ato( ID,D,IDU,C ),cuidado ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,IDU,XPTO,C ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,XPTO,CA )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,_,_,X,_ ),nao( nulo( X ) )),S ),
+                                               comprimento( S,L ),
+                                               L == 0 )) ).
+insercaoInterdito( ato( ID,D,IDS,C ),custo ) :-
+    getIncXPTO( XPTO ),
+    evolucao( ato( ID,D,IDU,IDS,XPTO ) ),
+    evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,IDSA,XPTO )) ),
+    evolucao( nulo( XPTO ) ),
+    evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,_,_,_,X ),nao( nulo( X ) )),S ),
+                                               comprimento( S,L ),
+                                               L == 0 )) ).
 
 
 
