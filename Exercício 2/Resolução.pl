@@ -1132,6 +1132,15 @@ existeE(instituicao(D,I)) :-
 existeE(ato(ID,D,IDU,IDS,C)) :-
 	retract((excecao(ato(ID,D,IDU,IDS,X)):- X>=Y,X=<Z)),
 	assert((excecao(ato(ID,D,IDU,IDS,X)):- X>=Y,X=<Z)).
+existeE(ato(ID,data( D,M,A ),IDU,IDS,C)) :-
+	retract((excecao(ato(ID,data( X,M,A ),IDU,IDS,C)):- X>=Y,X=<Z)),
+	assert((excecao(ato(ID,data( X,M,A ),IDU,IDS,C)):- X>=Y,X=<Z)).
+existeE(ato(ID,data( D,M,A ),IDU,IDS,C)) :-
+	retract((excecao(ato(ID,data( D,X,A ),IDU,IDS,C)):- X>=Y,X=<Z)),
+	assert((excecao(ato(ID,data( D,X,A ),IDU,IDS,C)):- X>=Y,X=<Z)).
+existeE(ato(ID,data( D,M,A ),IDU,IDS,C)) :-
+	retract((excecao(ato(ID,data( D,M,X ),IDU,IDS,C)):- X>=Y,X=<Z)),
+	assert((excecao(ato(ID,data( D,M,X ),IDU,IDS,C)):- X>=Y,X=<Z)).
 existeE(ato(ID,D,IDU,IDS,C)) :-
 	solucoes( (excecao( ato(ID,DA,IDA,IDSA,CA))),(excecao(ato(ID,DA,IDA,IDSA,CA))),LEXC ),
     comprimento(LEXC,S), S > 0.
