@@ -129,11 +129,11 @@ excecao( utente( 12,mauricio,I,lisboa ) ) :-
 %%  O utente com o IdUt 13, de nome trump, com 70 anos,
 %%  exige que não se saiba a sua morada.
 
-utente( 13,trump,70,xpto006 ).
+utente( 13,trump,70,xpto002 ).
 excecao( utente( IDU,N,I,L ) ) :-
-    utente( IDU,N,I,xpto006 ).
-nulo( xpto006 ).
-+utente( IDU,N,I,M ) :: ( solucoes( X,( utente( 25,_,_,X ),nao( nulo( X ) ) ),S ),
+    utente( IDU,N,I,xpto002 ).
+nulo( xpto002 ).
++utente( IDU,N,I,M ) :: ( solucoes( X,( utente( 13,_,_,X ),nao( nulo( X ) ) ),S ),
                           comprimento( S,L ),
                           L == 0 ).
 
@@ -191,9 +191,9 @@ excecao( cuidado( IdS,D,I ) ) :-
 %%  É desconhecida a descricão do cuidado com o IdServ 11 ,
 %%  prestado no hsjoao no porto.
 
-cuidado( 12,xpto0033,instituicao( hsjoao,porto )).
+cuidado( 12,xpto004,instituicao( hsjoao,porto )).
 excecao( cuidado( IdS,D,I ) ) :-
-    cuidado( IdS,xpto0033,I ).
+    cuidado( IdS,xpto004,I ).
 
 
 % -------  Conhecimento Imperfeito Impreciso ------%
@@ -257,9 +257,9 @@ instituicao( hfaro,faro ).
 
 %% Desconhece-se a localidade do hsmaria.
 
-instituicao( hsmaria,xpto002 ).
+instituicao( hsmaria,xpto005 ).
 excecao( instituicao( I,L ) ) :-
-    instituicao( I,xpto002 ).
+    instituicao( I,xpto005 ).
 
 
 % -------  Conhecimento Imperfeito Impreciso ------%
@@ -316,24 +316,24 @@ ato( 9,data( 16,3,2007 ),3,1,40 ).
 %%  Desconhece-se a data em que foi prestado o ato medico com IdServ 2,
 %%  designado por tac, pelo utente com IdUt 6, com um custo de 80 euros.
 
-ato( 11,xpto004,6,2,80 ).
+ato( 11,xpto006,6,2,80 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
-    ato( ID,xpto004,IDU,IdS,P ).
+    ato( ID,xpto006,IDU,IdS,P ).
 
 %%  Desconhece-se o custo do ato medico com ocorrido em 3/6/2007,
 %%  com IDServ 2 e IdUt 6, identificado pelo IDAto 12.
 
-ato( 12,data(3,6,2007 ),6,2,xpto040 ).
+ato( 12,data(3,6,2007 ),6,2,xpto007 ).
 excecao( ato( ID,D,IDU,IDS,P ) ) :-
-    ato( ID,D,IDU,IDS, xpto040).
+    ato( ID,D,IDU,IDS, xpto007).
 
 %%  Desconhece-se o dia em que foi realizado o cuidado médico com o IdServ 3,
 %%  pelo utente com o IdUt 5, com um custo de 20 euros. 
 %%  Apenas se sabe que foi prestado em março de 2007.
 
-ato( 13,data( xpto005,3,2007 ),5,3,20 ).
+ato( 13,data( xpto008,3,2007 ),5,3,20 ).
 excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
-    ato( ID,data( xpto005,M,A ),IDU,IdS,P ).
+    ato( ID,data( xpto008,M,A ),IDU,IdS,P ).
 
 
 % ------- Conhecimento Imperfeito Impreciso -------%
@@ -355,12 +355,12 @@ excecao( ato( 15,data(4,6,2007 ),6,9,30) ).
 %%  O utente com o IdUt 7, usufruiu do cuidado medico com o IdServ 10
 %%  em 1/4/2017, contudo pretende que não se saiba quanto pagou.
 
-ato( 16,data(1,4,2017),7,10,xpto007 ).
+ato( 16,data(1,4,2017),7,10,xpto009 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
-    ato( ID,D,IDU,IdS,xpto007 ).
-nulo( xpto007 ).
+    ato( ID,D,IDU,IdS,xpto009 ).
+nulo( xpto009 ).
 
-+ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 25,_,_,_,P ),nao( nulo( P ) ) ),S ),
++ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 7,_,_,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
 
