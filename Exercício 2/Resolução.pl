@@ -313,8 +313,8 @@ ato( 9,data( 16,3,2007 ),3,1,40 ).
 
 % ------- Conhecimento Imperfeito Incerto -------%
 
-%%  Desconhece-se a data em que foi prestado o ato medico com IdServ 2,
-%%  designado por tac, pelo utente com IdUt 6, com um custo de 80 euros.
+%%  Desconhece-se a data em que foi prestado o ato medico com IdAto 11, realizado
+%%  pelo utente com o IdUt 6, relativo ao cuidado com IdServ 2 com um custo de 80 euros.
 
 ato( 11,xpto006,6,2,80 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
