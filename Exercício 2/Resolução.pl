@@ -742,6 +742,7 @@ insercaoInterdito( utente( ID,I,M ),morada ) :-
     evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,_,X ),nao( nulo( X ) )),S ),
                                            comprimento( S,L ),
                                            L == 0 )) ).
+              
                                                                             
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
