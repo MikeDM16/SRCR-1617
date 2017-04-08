@@ -305,7 +305,7 @@ ato( 9,data( 16,3,2007 ),3,1,40 ).
 
 % ------- Conhecimento Perfeito Negativo -------%
 
-%%  Sabe-se que o ato com ID 10 ocorrido no dia 31/8/2000,
+%%  Sabe-se que o ato com ID 10 ocorrido no dia 31-08-2000,
 %%  com IdUt 3 e IDServ 7, não teve um custo de 50 euros.
 
 -ato( 10 ,data( 31,8,2000 ),3,7,50 ).
@@ -320,7 +320,7 @@ ato( 11,xpto006,6,2,80 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,xpto006,IDU,IdS,P ).
 
-%%  Desconhece-se o custo do ato medico com ocorrido em 3/6/2007,
+%%  Desconhece-se o custo do ato medico com ocorrido em 03-06-2007,
 %%  com IDServ 2 e IdUt 6, identificado pelo IDAto 12.
 
 ato( 12,data(3,6,2007 ),6,2,xpto007 ).
@@ -329,7 +329,7 @@ excecao( ato( ID,D,IDU,IDS,P ) ) :-
 
 %%  Desconhece-se o dia em que foi realizado o cuidado médico com o IdServ 3,
 %%  pelo utente com o IdUt 5, com um custo de 20 euros. 
-%%  Apenas se sabe que foi prestado em março de 2007.
+%%  Apenas se sabe o ato com IDAto 13 foi prestado em março de 2007.
 
 ato( 13,data( xpto008,3,2007 ),5,3,20 ).
 excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
@@ -339,12 +339,12 @@ excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
 % ------- Conhecimento Imperfeito Impreciso -------%
 
 
-%%  O ato medico ocorrido em 3/6/2007, com o IdUt 6 e IdServ 9 custou entre 10 a 25 euros.
+%%  O ato medico com IdAto 14 ocorrido em 03-06-2007, com o IdUt 6 e IdServ 9 custou entre 10 a 25 euros.
 
 excecao( ato( 14,data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
 
-%%  O ato medico ocorrido em 4/6/2007, com o IdUt 7 e IdServ 1 custou entre 20 ou 30 euros.
+%%  O ato medico com IdAto 15 ocorrido em 04-06-2007, com o IdUt 7 e IdServ 1 custou entre 20 ou 30 euros.
 
 excecao( ato( 15,data(4,6,2007 ),6,9,20 ) ).
 excecao( ato( 15,data(4,6,2007 ),6,9,30) ).
@@ -352,15 +352,15 @@ excecao( ato( 15,data(4,6,2007 ),6,9,30) ).
 
 % ------- Conhecimento Imperfeito Interdito -------%
 
-%%  O utente com o IdUt 7, usufruiu do cuidado medico com o IdServ 10
-%%  em 1/4/2017, contudo pretende que não se saiba quanto pagou.
+%%  O utente com o IdUt 13, usufruiu do cuidado medico com o IdServ 10
+%%  em 01-04-2017, contudo pretende que não se saiba quanto pagou por este ato identificado pelo IdAto 16.
 
-ato( 16,data(1,4,2017),7,10,xpto009 ).
+ato( 16,data(1,4,2017),13,10,xpto009 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,D,IDU,IdS,xpto009 ).
 nulo( xpto009 ).
 
-+ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 7,_,_,_,P ),nao( nulo( P ) ) ),S ),
++ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 16,_,_,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
 
