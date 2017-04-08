@@ -507,6 +507,8 @@ evolucao( Termo ) :-
     insercao( Termo ),
     testa( LINV ).
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento perfeito
 % partindo de conhecimento imperfeito impreciso do utente
@@ -647,6 +649,7 @@ evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
     evolucao( ato( ID,D,IDU,IDS,C )  ).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito positivo
@@ -659,6 +662,7 @@ evoluirConhecimento( Termo ) :-
     evolucao( Termo ).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito positivo
@@ -669,6 +673,7 @@ evoluirConhecimento( -Termo ) :-
 	naoExiste(Termo),
     naoExisteNT(-Termo),
     evolucao(-Termo).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -742,8 +747,8 @@ insercaoInterdito( utente( ID,I,M ),morada ) :-
     evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,_,X ),nao( nulo( X ) )),S ),
                                            comprimento( S,L ),
                                            L == 0 )) ).
-              
-                                                                            
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a inserção de conhecimento
