@@ -74,19 +74,6 @@ getIncIDA( IDA ) :-
     counter_ida( IDA ).
 
 
-getXPTO( XPTO ) :-
-    counter_xpto( XPTO2 ),
-    name( XPTO,[120,112,116,111,XPTO2] ).
-
-getIDU( IDU ) :-
-    counter_idu( IDU ).
-
-getIDS( IDS ) :-
-    counter_ids( IDS ).
-
-getIDA( IDA ) :-
-    counter_ida( IDA ).
-
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado utente: IdUt, Nome, Idade, Morada -> {V,F,D}
@@ -104,51 +91,53 @@ utente( 7,paulo,24,braganca ).
 
 % ------- Conhecimento Perfeito Negativo -------%
 
-%%  O utente manuel com id 21, 20 anos, nega ser de bragança. 
+%%  O utente manuel com id 8, 20 anos, nega ser de bragança. 
 
--utente( 21,manuel,20,braganca ).
+-utente( 8,manuel,20,braganca ).
 
-%%  O utente com o id 20, chamada anastacia de felgueiras nega ter 30 anos.
+%%  O utente com o id 9, chamada anastacia de felgueiras nega ter 30 anos.
 
--utente( 20,anastacia,30,felgueiras ).
+-utente( 9,anastacia,30,felgueiras ).
 
 
 % ------- Conhecimento Imperfeito Incerto ------%
 
-%% Desconhece-se a idade do utente com o IdUt 22,
+%% Desconhece-se a idade do utente com o IdUt 10,
 %% de nome maria e residente na guarda.
 
-utente( 22,maria,xpto001,guarda ).
+utente( 10 ,maria,xpto001,guarda ).
 excecao( utente( IDU,N,I,M ) ) :-
     utente( IDU,N,xpto001,M ).
 
 
 % ------- Conhecimento Imperfeito Impreciso ------%
 
-%%  A joana, utente com IdUt 23 e com 22 anos de idade,
+%%  A joana, utente com IdUt 11 e com 22 anos de idade,
 %%  mora em braga ou em guimaraes.
 
-excecao( utente( 23,joana,22,braga ) ).
-excecao( utente( 23,joana,22,guimaraes ) ).
+excecao( utente( 11,joana,22,braga ) ).
+excecao( utente( 11,joana,22,guimaraes ) ).
 
-%%  Não se sabe ao certo a  idade do mauricio, com o IdUt 24
+%%  Não se sabe ao certo a  idade do mauricio, com o IdUt 12
 %%  e residente em lisboa. Apenas se sabe que possui entre 18 a 24 anos .
 
-excecao( utente( 24,mauricio,I,lisboa ) ) :-
+excecao( utente( 12,mauricio,I,lisboa ) ) :-
     I >= 18, I =< 24.
 
 % -------  Conhecimento Imperfeito Interdito ------%
 
-%%  O utente com o IdUt 25, de nome trump, com 70 anos,
+%%  O utente com o IdUt 13, de nome trump, com 70 anos,
 %%  exige que não se saiba a sua morada.
 
-utente( 25,trump,70,xpto006 ).
+utente( 13,trump,70,xpto006 ).
 excecao( utente( IDU,N,I,L ) ) :-
     utente( IDU,N,I,xpto006 ).
 nulo( xpto006 ).
 +utente( IDU,N,I,M ) :: ( solucoes( X,( utente( 25,_,_,X ),nao( nulo( X ) ) ),S ),
                           comprimento( S,L ),
                           L == 0 ).
+
+
 
       
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -190,21 +179,32 @@ cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 -cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
 
 
-% Conhecimento Imperfeito Incerto
+% -------  Conhecimento Imperfeito Incerto ------%
 
-cuidado( 20,pediatria,xpto003 ).
+%%  É desconhecido o nome da instituição que presta o serviço
+%%  com o IdServ 11 , designado por pediatria.
+
+cuidado( 11,pediatria,xpto003 ).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,D,xpto003 ).
 
-cuidado( 200,xpto0033,instituicao( hsjoao,porto )).
+%%  É desconhecida a descricão do cuidado com o IdServ 11 ,
+%%  prestado no hsjoao no porto.
+
+cuidado( 12,xpto0033,instituicao( hsjoao,porto )).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,xpto0033,I ).
 
 
-% Conhecimento Imperfeito Impreciso
+% -------  Conhecimento Imperfeito Impreciso ------%
 
-excecao( cuidado( 21,oftalmologia,instituicao( hsjoao,porto ) ) ).
-excecao( cuidado( 21,oftalmologia,instituicao( hporto,porto ) ) ).
+%%  O cuidado com o IdServ 13, designado por oftalmologia,
+%%  é prestado em uma das seguintes instituições: hsjoao ou hporto.
+
+excecao( cuidado( 13,oftalmologia,instituicao( hsjoao,porto ) ) ).
+excecao( cuidado( 13,oftalmologia,instituicao( hporto,porto ) ) ).
+
+
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -237,7 +237,7 @@ excecao( cuidado( 21,oftalmologia,instituicao( hporto,porto ) ) ).
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado Instituição: Nome, Cidade -> {V,F,D}
 
-% Conhecimento Perfeito Positivo
+% ------- Conhecimento Perfeito Positivo -------%
 
 instituicao( hpbraga,braga ).
 instituicao( hsjoao,porto ).
@@ -246,21 +246,31 @@ instituicao( hporto,porto ).
 instituicao( hfaro,faro ).
 
 
-% Conhecimento Perfeito Negativo
+% ------- Conhecimento Perfeito Negativo -------%
+
+%% Em braga nao existe nenhuma instituicao com o nome hsjoao.
 
 -instituicao( hsjoao,braga ).
 
 
-% Conhecimento Imperfeito Incerto
+% -------  Conhecimento Imperfeito Incerto ------%
+
+%% Desconhece-se a localidade do hsmaria.
 
 instituicao( hsmaria,xpto002 ).
 excecao( instituicao( I,L ) ) :-
     instituicao( I,xpto002 ).
 
-% Conhecimento Imperfeito Impreciso
+
+% -------  Conhecimento Imperfeito Impreciso ------%
+
+%% Não se sabe ao certo se a instituicao hsjose se 
+%% encontra localizada em braga ou no porto.
 
 excecao(instituicao(hsjose,braga)).
 excecao(instituicao(hsjose,porto)).
+
+
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -280,7 +290,7 @@ excecao(instituicao(hsjose,porto)).
 % Extensao do predicado ato medico: 
 % Data, IdUtente, IdServico, Custo -> {V,F,D}
 
-% Conhecimento Perfeito Positivo
+% ------- Conhecimento Perfeito Positivo -------%
 
 ato( 1,data( 1,2,1996 ),3,3,10 ).
 ato( 2,data( 15,3,2017 ),1,2,15 ).
@@ -293,39 +303,59 @@ ato( 8,data( 16,3,2007 ),6,9,20 ).
 ato( 9,data( 16,3,2007 ),3,1,40 ).
 
 
-% Conhecimento Perfeito Negativo
+% ------- Conhecimento Perfeito Negativo -------%
 
--ato( 20,data( D,M,2005 ),1,1,P ).
--ato( 21,data( 31,8,2000 ),3,7,50 ).
+%%  Sabe-se que o ato com ID 10 ocorrido no dia 31/8/2000,
+%%  com IdUt 3 e IDServ 7, não teve um custo de 50 euros.
+
+-ato( 10 ,data( 31,8,2000 ),3,7,50 ).
 
 
-% Conhecimento Imperfeito Incerto
+% ------- Conhecimento Imperfeito Incerto -------%
 
-ato( 22,xpto004,6,2,80 ).
+%%  Desconhece-se a data em que foi prestado o ato medico com IdServ 2,
+%%  designado por tac, pelo utente com IdUt 6, com um custo de 80 euros.
+
+ato( 11,xpto004,6,2,80 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,xpto004,IDU,IdS,P ).
 
-ato( 220,data(3,6,2007 ),6,2,xpto040 ).
+%%  Desconhece-se o custo do ato medico com ocorrido em 3/6/2007,
+%%  com IDServ 2 e IdUt 6, identificado pelo IDAto 12.
+
+ato( 12,data(3,6,2007 ),6,2,xpto040 ).
 excecao( ato( ID,D,IDU,IDS,P ) ) :-
     ato( ID,D,IDU,IDS, xpto040).
 
-ato( 23,data( xpto005,3,2007 ),5,3,20 ).
+%%  Desconhece-se o dia em que foi realizado o cuidado médico com o IdServ 3,
+%%  pelo utente com o IdUt 5, com um custo de 20 euros. 
+%%  Apenas se sabe que foi prestado em março de 2007.
+
+ato( 13,data( xpto005,3,2007 ),5,3,20 ).
 excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
     ato( ID,data( xpto005,M,A ),IDU,IdS,P ).
 
 
-% Conhecimento Imperfeito Impreciso
+% ------- Conhecimento Imperfeito Impreciso -------%
 
-excecao( ato( 24,data(3,6,2007 ),6,9,P ) ) :-
+
+%%  O ato medico ocorrido em 3/6/2007, com o IdUt 6 e IdServ 9 custou entre 10 a 25 euros.
+
+excecao( ato( 14,data(3,6,2007 ),6,9,P ) ) :-
     P >= 10, P =< 25.
 
+%%  O ato medico ocorrido em 4/6/2007, com o IdUt 7 e IdServ 1 custou entre 20 ou 30 euros.
 
-excecao( ato( 240,data(3,6,2007 ),6,9,20 ) ).
-excecao( ato( 240,data(3,6,2007 ),6,9,30) ).
+excecao( ato( 15,data(4,6,2007 ),6,9,20 ) ).
+excecao( ato( 15,data(4,6,2007 ),6,9,30) ).
 
-% Conhecimento Imperfeito Interdito
 
-ato( 25,data(1,4,2017),25,10,xpto007 ).
+% ------- Conhecimento Imperfeito Interdito -------%
+
+%%  O utente com o IdUt 7, usufruiu do cuidado medico com o IdServ 10
+%%  em 1/4/2017, contudo pretende que não se saiba quanto pagou.
+
+ato( 16,data(1,4,2017),7,10,xpto007 ).
 excecao( ato( ID,D,IDU,IdS,P ) ) :-
     ato( ID,D,IDU,IdS,xpto007 ).
 nulo( xpto007 ).
@@ -333,6 +363,8 @@ nulo( xpto007 ).
 +ato( ID,D,IDU,IdS,P ) :: ( solucoes( P,( ato( 25,_,_,_,P ),nao( nulo( P ) ) ),S ),
                             comprimento( S,N ),
                             N == 0 ).
+
+
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -360,6 +392,10 @@ nulo( xpto007 ).
 dia( data( D,M,A ),D ).
 mes( data( D,M,A ),M ).
 ano( data( D,M,A ),A ).
+
+
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
+%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 
 
 
