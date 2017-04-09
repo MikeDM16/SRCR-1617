@@ -177,33 +177,33 @@ cuidado( 10,quimioterapia,instituicao( hsjoao,porto ) ).
 
 %%  A instituição hfaro nao presta o cuidado ortopedia.
 
--cuidado( ID,ortopedia,instituicao( hfaro,faro ) ).
+-cuidado( 11,ortopedia,instituicao( hfaro,faro ) ).
 
 
 % -------  Conhecimento Imperfeito Incerto ------%
 
 %%  É desconhecido o nome da instituição que presta o serviço
-%%  com o IdServ 11 , designado por pediatria.
+%%  com o IdServ 12 , designado por pediatria.
 
-cuidado( 11,pediatria,xpto003 ).
+cuidado( 12,pediatria,xpto003 ).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,D,xpto003 ).
 
 %%  É desconhecida a descricão do cuidado com o IdServ 12 ,
 %%  prestado no hsjoao no porto.
 
-cuidado( 12,xpto004,instituicao( hsjoao,porto )).
+cuidado( 13,xpto004,instituicao( hsjoao,porto )).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,xpto004,I ).
 
 
 % -------  Conhecimento Imperfeito Impreciso ------%
 
-%%  O cuidado com o IdServ 13, designado por oftalmologia,
+%%  O cuidado com o IdServ 14, designado por oftalmologia,
 %%  é prestado em uma das seguintes instituições: hsjoao ou hporto.
 
-excecao( cuidado( 13,oftalmologia,instituicao( hsjoao,porto ) ) ).
-excecao( cuidado( 13,oftalmologia,instituicao( hporto,porto ) ) ).
+excecao( cuidado( 14,oftalmologia,instituicao( hsjoao,porto ) ) ).
+excecao( cuidado( 14,oftalmologia,instituicao( hporto,porto ) ) ).
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -1146,7 +1146,7 @@ naoExisteNT(-utente(ID,N,I,M)) :-
     comprimento( L,S ),
    	S < 2.
 naoExisteNT(-instituicao(D,I)) :-
-	solucoes( D, -utente(D,I), L),
+	solucoes( D, -instituicao(D,II), L),
     comprimento( L,S ),
    	S < 2.
 naoExisteNT(-cuidado(ID,D,I)) :-
