@@ -33,9 +33,9 @@
 :- dynamic counter_ida/1.
 :- dynamic counter_xpto/1.
 
-counter_idu(100).
-counter_ids(100).
-counter_ida(100).
+counter_idu(13).
+counter_ids(13).
+counter_ida(16).
 counter_xpto(48).
 
 
@@ -157,7 +157,7 @@ nulo( xpto002 ).
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado cuidado:
-$ IdServ, Descrição, Instituicao -> {V,F,D}
+% IdServ, Descrição, Instituicao -> {V,F,D}
 
 % ------- Conhecimento Perfeito Positivo -------%
 
