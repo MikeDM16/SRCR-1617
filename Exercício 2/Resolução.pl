@@ -34,7 +34,7 @@
 :- dynamic counter_xpto/1.
 
 counter_idu(13).
-counter_ids(13).
+counter_ids(14).
 counter_ida(16).
 counter_xpto(48).
 
