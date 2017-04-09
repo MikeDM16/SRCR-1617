@@ -38,6 +38,7 @@ counter_ids(100).
 counter_ida(100).
 counter_xpto(48).
 
+
 increment( idu ) :-
     retract( counter_idu( C ) ),
     C1 is C + 1,
@@ -124,6 +125,7 @@ excecao( utente( 11,joana,22,guimaraes ) ).
 excecao( utente( 12,mauricio,I,lisboa ) ) :-
     I >= 18, I =< 24.
 
+
 % -------  Conhecimento Imperfeito Interdito ------%
 
 %%  O utente com o IdUt 13, de nome trump, com 70 anos,
@@ -138,13 +140,12 @@ nulo( xpto002 ).
                           L == 0 ).
 
 
-
-      
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -utente( IDU,N,I,M ) :-
     nao( utente( IDU,N,I,M ) ),
     nao( excecao( utente( IDU,N,I,M ) ) ).
+
 
 % O Utente a remover não pode ter atos associados
 
@@ -203,8 +204,6 @@ excecao( cuidado( IdS,D,I ) ) :-
 
 excecao( cuidado( 13,oftalmologia,instituicao( hsjoao,porto ) ) ).
 excecao( cuidado( 13,oftalmologia,instituicao( hporto,porto ) ) ).
-
-
 
 
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
@@ -271,12 +270,11 @@ excecao(instituicao(hsjose,braga)).
 excecao(instituicao(hsjose,porto)).
 
 
-
-
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -instituicao( N,C ) :- nao( instituicao( N,C ) ), 
                        nao( excecao( instituicao( N,C ))).
+
 
 % Não permite remoção se estiver associado algum cuidado prestado
 
@@ -327,7 +325,7 @@ ato( 12,data(3,6,2007 ),6,2,xpto007 ).
 excecao( ato( ID,D,IDU,IDS,P ) ) :-
     ato( ID,D,IDU,IDS, xpto007).
 
-%%  Desconhece-se o dia em que foi realizado o cuidado médico com o IdServ 3,
+%%  Desconhece-se o dia em que foi prestado o cuidado IdServ 3,
 %%  pelo utente com o IdUt 5, com um custo de 20 euros. 
 %%  Apenas se sabe o ato com IDAto 13 foi prestado em março de 2007.
 
@@ -337,7 +335,6 @@ excecao( ato( ID,data( D,M,A ),IDU,IdS,P ) ) :-
 
 
 % ------- Conhecimento Imperfeito Impreciso -------%
-
 
 %%  O ato medico com IdAto 14 ocorrido em 03-06-2007, com o IdUt 6 e IdServ 9 custou entre 10 a 25 euros.
 
@@ -365,12 +362,11 @@ nulo( xpto009 ).
                             N == 0 ).
 
 
-
-
 % Adoção do Pressuposto do Mundo Fechado com consideração de exceções
 
 -ato( ID,D,IDU,IDS,C ) :- nao( ato( ID,D,IDU,IDS, C )),
                           nao( excecao( ato( ID,D,IDU,IDS, C ) )).
+
 
 % Não permitir inserir atos com IdUt não registados
 
@@ -386,16 +382,13 @@ nulo( xpto009 ).
                             L == 1 ).
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao dos predicados dia, mes e ano: Data, Dia/Mes/Ano -> {V,F}
 
 dia( data( D,M,A ),D ).
 mes( data( D,M,A ),M ).
 ano( data( D,M,A ),A ).
-
-
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
-%--------------------------------- - - - - - - - - - -  -  -  -  -   -
 
 
 
@@ -563,6 +556,7 @@ evoluirConhecimento( utente( ID,N,I,M )) :-
     removeAll( LEXC ),
     evolucao( utente( ID,N,I,M ) ).
 
+
 % partindo de conhecimento imperfeito impreciso do cuidado
 
 evoluirConhecimento( cuidado( ID,D,I )) :-
@@ -572,6 +566,7 @@ evoluirConhecimento( cuidado( ID,D,I )) :-
     removeAll( LEXC ),
     evolucao( cuidado( ID,D,I )).
 
+
 % partindo de conhecimento imperfeito impreciso da instituicao
 
 evoluirConhecimento( instituicao( D,I )) :-
@@ -580,6 +575,7 @@ evoluirConhecimento( instituicao( D,I )) :-
     comprimento(LEXC,S), S > 0,
     removeAll( LEXC ),
     assert(instituicao( D,I )).
+
 
 % partindo de conhecimento imperfeito impreciso do ato
 
@@ -618,6 +614,8 @@ evoluirConhecimento( ato( ID,D,IDU,IDC,C)) :-
     removeAll( LEXC ),
     evolucao( ato( ID,D,IDU,IDC,C)).
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensão do predicado que permite a evolução de conhecimento perfeito
 % partindo de conhecimento imperfeito incerto do utente
@@ -644,6 +642,7 @@ evoluirConhecimento( utente( ID,N,I,M ) ) :-
     removeUtente( ID ),
     evolucao( utente( ID,N,I,M ) ).
 
+
 % partindo de conhecimento imperfeito incerto do cuidado
 
 evoluirConhecimento( cuidado( ID,D,I )) :-
@@ -661,6 +660,7 @@ evoluirConhecimento( cuidado( ID,D,I )) :-
     removeCuidado( ID ),
     evolucao( cuidado( ID,D,I ) ).
 
+
 % partindo de conhecimento imperfeito incerto da instituicao
 
 evoluirConhecimento( instituicao( D,I)) :-
@@ -670,6 +670,7 @@ evoluirConhecimento( instituicao( D,I)) :-
     removeAll( LEXC ),
     removeInst( D ),
     evolucao( instituicao( D,I)).
+
 
 % partindo de conhecimento imperfeito incerto do ato
 
@@ -735,7 +736,7 @@ evoluirConhecimento( ato( ID,D,IDU,IDS,C ) ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito positivo
 
-evoluirConhecimento( Termo ) :-
+inserirPositivo( Termo ) :-
 	demo(Termo,falso),
 	nao(existeE(Termo)),
 	naoExisteNT(-Termo),
@@ -748,7 +749,7 @@ evoluirConhecimento( Termo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % perfeito positivo
 
-evoluirConhecimento( -Termo ) :-
+inserirNegativo( -Termo ) :-
 	demo(Termo,falso),
 	nao(existeE(Termo)),	
 	naoExiste(Termo),
@@ -761,58 +762,58 @@ evoluirConhecimento( -Termo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo incerto
 
-insercaoIncerto( utente( ID,I,M ),nome ) :-
+inserirIncerto( utente( ID,I,M ),nome ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,XPTO,I,M ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU )) ).
-insercaoIncerto( utente( ID,N,M ),idade ) :-
+inserirIncerto( utente( ID,N,M ),idade ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,N,XPTO,M ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU )) ).
-insercaoIncerto( utente( ID,N,I ),morada ) :-
+inserirIncerto( utente( ID,N,I ),morada ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,N,I,XPTO ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO )) ).
 
-insercaoIncerto( cuidado( ID,I ),descricao ) :-
+inserirIncerto( cuidado( ID,I ),descricao ) :-
     getIncXPTO( XPTO ),
     evolucao( cuidado( ID,XPTO,I ) ),
     evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,XPTO,IC )) ).
-insercaoIncerto( cuidado( ID,D ),instituicao ) :-
+inserirIncerto( cuidado( ID,D ),instituicao ) :-
     getIncXPTO( XPTO ),
     evolucao( cuidado( ID,D,XPTO ) ),
     evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,DC,XPTO )) ).
 
-insercaoIncerto( instituicao( D ),cidade ) :-
+inserirIncerto( instituicao( D ),cidade ) :-
     getIncXPTO( XPTO ),
     evolucao( instituicao( D,XPTO ) ),
     evolucao( (excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO )) ).
 
-insercaoIncerto( ato( ID,data( M,A ),IDU,IDS,C ),dia ) :-
+inserirIncerto( ato( ID,data( M,A ),IDU,IDS,C ),dia ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,data(XPTO,M,A),IDU,IDS,C ) ),
     evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(XPTO,MA,AA),IDUA,IDSA,CA )) ).
-insercaoIncerto( ato( ID,data( D,A) ,IDU,IDS,C ),mes ) :-
+inserirIncerto( ato( ID,data( D,A) ,IDU,IDS,C ),mes ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,data(D,XPTO,A),IDU,IDS,C ) ),
     evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(DA,XPTO,AA),IDUA,IDSA,CA )) ).
-insercaoIncerto( ato( ID,data( D,M ),IDU,IDS,C ),ano ) :-
+inserirIncerto( ato( ID,data( D,M ),IDU,IDS,C ),ano ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,data(D,M,XPTO),IDU,IDS,C ) ),
     evolucao( (excecao( ato( IDA,data(DA,MA,AA),IDUA,IDSA,CA ) ) :- ato( IDA,data(DA,MA,XPTO),IDUA,IDSA,CA )) ).
-insercaoIncerto( ato( ID,IDU,IDS,C ),data ) :-
+inserirIncerto( ato( ID,IDU,IDS,C ),data ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,XPTO,IDU,IDS,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDUA,IDSA,CA )) ).
-insercaoIncerto( ato( ID,D,IDS,C ),utente ) :-
+inserirIncerto( ato( ID,D,IDS,C ),utente ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,XPTO,IDS,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDSA,CA )) ).
-insercaoIncerto( ato( ID,D,IDU,C ),cuidado ) :-
+inserirIncerto( ato( ID,D,IDU,C ),cuidado ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,IDU,XPTO,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,XPTO,CA )) ).
-insercaoIncerto( ato( ID,D,IDS,C ),custo ) :-
+inserirIncerto( ato( ID,D,IDS,C ),custo ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,IDU,IDS,XPTO ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,IDSA,XPTO )) ).
@@ -823,71 +824,71 @@ insercaoIncerto( ato( ID,D,IDS,C ),custo ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo impreciso
 
-insercaoImpreciso( utente( ID,N,[I1 - I2],M ) ) :-
+inserirImpreciso( utente( ID,N,[I1 - I2],M ) ) :-
     evolucao( (excecao( utente( ID,N,I,M ) ) :- I >= I1, I =< I2) ).
-insercaoImpreciso( utente( ID,[],I,M ) ).
-insercaoImpreciso( utente( ID,N,[],M ) ).
-insercaoImpreciso( utente( ID,N,I,[] ) ).
-insercaoImpreciso( utente( ID,[N|NS],I,M ) ) :-
+inserirImpreciso( utente( ID,[],I,M ) ).
+inserirImpreciso( utente( ID,N,[],M ) ).
+inserirImpreciso( utente( ID,N,I,[] ) ).
+inserirImpreciso( utente( ID,[N|NS],I,M ) ) :-
     evolucao( excecao( utente( ID,N,I,M ) ) ),
-    insercaoImpreciso( utente( ID,NS,I,M ) ).
-insercaoImpreciso( utente( ID,N,[I|IS],M ) ) :-
+    inserirImpreciso( utente( ID,NS,I,M ) ).
+inserirImpreciso( utente( ID,N,[I|IS],M ) ) :-
     evolucao( excecao( utente( ID,N,I,M ) ) ),
-    insercaoImpreciso( utente( ID,N,IS,M ) ).
-insercaoImpreciso( utente( ID,N,I,[M|MS] ) ) :-
+    inserirImpreciso( utente( ID,N,IS,M ) ).
+inserirImpreciso( utente( ID,N,I,[M|MS] ) ) :-
     evolucao( excecao( utente( ID,N,I,M ) ) ),
-    insercaoImpreciso( utente( ID,N,I,MS ) ).
+    inserirImpreciso( utente( ID,N,I,MS ) ).
 
-insercaoImpreciso( cuidado( ID,[],I ) ).
-insercaoImpreciso( cuidado( ID,D,[] ) ).
-insercaoImpreciso( cuidado( ID,[D|DS],I ) ) :-
+inserirImpreciso( cuidado( ID,[],I ) ).
+inserirImpreciso( cuidado( ID,D,[] ) ).
+inserirImpreciso( cuidado( ID,[D|DS],I ) ) :-
     evolucao( excecao( cuidado( ID,D,I ) ) ),
-    insercaoImpreciso( cuidado( ID,DS,I ) ).
-insercaoImpreciso( cuidado( ID,D,[I|IS] ) ) :-
+    inserirImpreciso( cuidado( ID,DS,I ) ).
+inserirImpreciso( cuidado( ID,D,[I|IS] ) ) :-
     evolucao( excecao( cuidado( ID,D,I ) ) ),
-    insercaoImpreciso( cuidado( ID,D,IS ) ).
+    inserirImpreciso( cuidado( ID,D,IS ) ).
 
-insercaoImpreciso( instituicao( D,[] ) ).
-insercaoImpreciso( instituicao( D,[C|CS] ) ) :-
+inserirImpreciso( instituicao( D,[] ) ).
+inserirImpreciso( instituicao( D,[C|CS] ) ) :-
     evolucao( excecao( instituicao( D,C ) ) ),
-    insercaoImpreciso( instituicao( D,CS ) ).
+    inserirImpreciso( instituicao( D,CS ) ).
 
-insercaoImpreciso( ato( ID,D,IDU,IDS,[C1 - C2] ) ) :-
+inserirImpreciso( ato( ID,D,IDU,IDS,[C1 - C2] ) ) :-
     evolucao( (excecao( ato( ID,D,IDU,IDS,C ) ) :- C >= C1, C =< C2) ).
-insercaoImpreciso( ato( ID,data( [D1 - D2],M,A ),IDU,IDS,C ) ) :-
+inserirImpreciso( ato( ID,data( [D1 - D2],M,A ),IDU,IDS,C ) ) :-
     evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- D >= D1, D =< D2) ).
-insercaoImpreciso( ato( ID,data( D,[M1 - M2],A ),IDU,IDS,C ) ) :-
+inserirImpreciso( ato( ID,data( D,[M1 - M2],A ),IDU,IDS,C ) ) :-
     evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- M >= M1, M =< M2) ).
-insercaoImpreciso( ato( ID,data( D,M,[A1 - A2] ),IDU,IDS,C ) ) :-
+inserirImpreciso( ato( ID,data( D,M,[A1 - A2] ),IDU,IDS,C ) ) :-
     evolucao( (excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) :- A >= A1, A =< A2) ).
-insercaoImpreciso( ato( ID,[],IDU,IDS,C ) ).
-insercaoImpreciso( ato( ID,D,[],IDS,C ) ).
-insercaoImpreciso( ato( ID,D,IDU,[],C ) ).
-insercaoImpreciso( ato( ID,D,IDU,IDS,[] ) ).
-insercaoImpreciso( ato( ID,data( [],M,A ),IDU,IDS,C ) ).
-insercaoImpreciso( ato( ID,data( D,[],A ),IDU,IDS,C ) ).
-insercaoImpreciso( ato( ID,data( D,M,[] ),IDU,IDS,C ) ).
-insercaoImpreciso( ato( ID,[D|DS],IDU,IDS,C ) ) :-
+inserirImpreciso( ato( ID,[],IDU,IDS,C ) ).
+inserirImpreciso( ato( ID,D,[],IDS,C ) ).
+inserirImpreciso( ato( ID,D,IDU,[],C ) ).
+inserirImpreciso( ato( ID,D,IDU,IDS,[] ) ).
+inserirImpreciso( ato( ID,data( [],M,A ),IDU,IDS,C ) ).
+inserirImpreciso( ato( ID,data( D,[],A ),IDU,IDS,C ) ).
+inserirImpreciso( ato( ID,data( D,M,[] ),IDU,IDS,C ) ).
+inserirImpreciso( ato( ID,[D|DS],IDU,IDS,C ) ) :-
     evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,DS,IDU,IDS,C ) ).
-insercaoImpreciso( ato( ID,D,[IDU|IDUS],IDS,C ) ) :-
+    inserirImpreciso( ato( ID,DS,IDU,IDS,C ) ).
+inserirImpreciso( ato( ID,D,[IDU|IDUS],IDS,C ) ) :-
     evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,D,IDUS,IDS,C ) ).
-insercaoImpreciso( ato( ID,D,IDU,[IDS|IDSS],C ) ) :-
+    inserirImpreciso( ato( ID,D,IDUS,IDS,C ) ).
+inserirImpreciso( ato( ID,D,IDU,[IDS|IDSS],C ) ) :-
     evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,D,IDU,IDSS,C ) ).
-insercaoImpreciso( ato( ID,D,IDU,IDS,[C|CS] ) ) :-
+    inserirImpreciso( ato( ID,D,IDU,IDSS,C ) ).
+inserirImpreciso( ato( ID,D,IDU,IDS,[C|CS] ) ) :-
     evolucao( excecao( ato( ID,D,IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,D,IDU,IDS,CS ) ).
-insercaoImpreciso( ato( ID,data( [D|DS],M,A ),IDU,IDS,C ) ) :-
+    inserirImpreciso( ato( ID,D,IDU,IDS,CS ) ).
+inserirImpreciso( ato( ID,data( [D|DS],M,A ),IDU,IDS,C ) ) :-
     evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,data( DS,M,A ) ),IDU,IDS,C ).
-insercaoImpreciso( ato( ID,data( D,[M|MS],A ),IDU,IDS,C ) ) :-
+    inserirImpreciso( ato( ID,data( DS,M,A ) ),IDU,IDS,C ).
+inserirImpreciso( ato( ID,data( D,[M|MS],A ),IDU,IDS,C ) ) :-
     evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,data( D,MS,A ) ),IDU,IDS,C ).
-insercaoImpreciso( ato( ID,data( D,M,[A|AS] ),IDU,IDS,C ) ) :-
+    inserirImpreciso( ato( ID,data( D,MS,A ) ),IDU,IDS,C ).
+inserirImpreciso( ato( ID,data( D,M,[A|AS] ),IDU,IDS,C ) ) :-
     evolucao( excecao( ato( ID,data( D,M,A ),IDU,IDS,C ) ) ),
-    insercaoImpreciso( ato( ID,data( D,M,AS ) ),IDU,IDS,C ).
+    inserirImpreciso( ato( ID,data( D,M,AS ) ),IDU,IDS,C ).
 
 
 
@@ -895,7 +896,7 @@ insercaoImpreciso( ato( ID,data( D,M,[A|AS] ),IDU,IDS,C ) ) :-
 % Extensão do predicado que permite a evolução de conhecimento
 % imperfeito do tipo interdito
 
-insercaoInterdito( utente( ID,I,M ),nome ) :-
+inserirInterdito( utente( ID,I,M ),nome ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,XPTO,I,M ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,XPTO,IU,MU )) ),
@@ -903,7 +904,7 @@ insercaoInterdito( utente( ID,I,M ),nome ) :-
     evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,X,_,_ ),nao( nulo( X ) )),S ),
                                            comprimento( S,L ),
                                            L == 0 )) ).
-insercaoInterdito( utente( ID,I,M ),idade ) :-
+inserirInterdito( utente( ID,I,M ),idade ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,N,XPTO,M ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,XPTO,MU )) ),
@@ -911,7 +912,7 @@ insercaoInterdito( utente( ID,I,M ),idade ) :-
     evolucao( (+utente( IDU,NU,IU,MU ) :: (solucoes( X,(utente( ID,_,X,_ ),nao( nulo( X ) )),S ),
                                            comprimento( S,L ),
                                            L == 0 )) ).
-insercaoInterdito( utente( ID,I,M ),morada ) :-
+inserirInterdito( utente( ID,I,M ),morada ) :-
     getIncXPTO( XPTO ),
     evolucao( utente( ID,N,I,XPTO ) ),
     evolucao( (excecao( utente( IDU,NU,IU,MU ) ) :- utente( IDU,NU,IU,XPTO )) ),
@@ -920,7 +921,7 @@ insercaoInterdito( utente( ID,I,M ),morada ) :-
                                            comprimento( S,L ),
                                            L == 0 )) ).
 
-insercaoInterdito( cuidado( ID,I ),descricao ) :-
+inserirInterdito( cuidado( ID,I ),descricao ) :-
     getIncXPTO( XPTO ),
     evolucao( cuidado( ID,XPTO,I ) ),
     evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,XPTO,IC )) ),
@@ -928,7 +929,7 @@ insercaoInterdito( cuidado( ID,I ),descricao ) :-
     evolucao( (+cuidado( IDC,DC,IC ) :: (solucoes( X,(cuidado( ID,X,_ ),nao( nulo( X ) )),S ),
                                          comprimento( S,L ),
                                          L == 0 )) ).
-insercaoInterdito( cuidado( ID,D ),instituicao ) :-
+inserirInterdito( cuidado( ID,D ),instituicao ) :-
     getIncXPTO( XPTO ),
     evolucao( cuidado( ID,D,XPTO ) ),
     evolucao( (excecao( cuidado( IDC,DC,IC ) ) :- cuidado( IDC,DC,XPTO )) ),
@@ -937,7 +938,7 @@ insercaoInterdito( cuidado( ID,D ),instituicao ) :-
                                          comprimento( S,L ),
                                          L == 0 )) ).
 
-insercaoInterdito( instituicao( D ),cidade ) :-
+inserirInterdito( instituicao( D ),cidade ) :-
     getIncXPTO( XPTO ),
     evolucao( instituicao( D,XPTO ) ),
     evolucao( (excecao( instituicao( DI,CI ) ) :- instituicao( DI,XPTO )) ),
@@ -946,7 +947,7 @@ insercaoInterdito( instituicao( D ),cidade ) :-
                                          comprimento( S,L ),
                                          L == 0 )) ).
 
-insercaoInterdito( ato( ID,IDU,IDS,C ),data ) :-
+inserirInterdito( ato( ID,IDU,IDS,C ),data ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,XPTO,IDU,IDS,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,XPTO,IDUA,IDSA,CA )) ),
@@ -954,7 +955,7 @@ insercaoInterdito( ato( ID,IDU,IDS,C ),data ) :-
     evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,X,_,_,_ ),nao( nulo( X ) )),S ),
                                                comprimento( S,L ),
                                                L == 0 )) ).
-insercaoInterdito( ato( ID,D,IDS,C ),utente ) :-
+inserirInterdito( ato( ID,D,IDS,C ),utente ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,XPTO,IDS,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,XPTO,IDSA,CA )) ),
@@ -962,7 +963,7 @@ insercaoInterdito( ato( ID,D,IDS,C ),utente ) :-
     evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,_,X,_,_ ),nao( nulo( X ) )),S ),
                                                comprimento( S,L ),
                                                L == 0 )) ).
-insercaoInterdito( ato( ID,D,IDU,C ),cuidado ) :-
+inserirInterdito( ato( ID,D,IDU,C ),cuidado ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,IDU,XPTO,C ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,XPTO,CA )) ),
@@ -970,7 +971,7 @@ insercaoInterdito( ato( ID,D,IDU,C ),cuidado ) :-
     evolucao( (+ato( IDA,DA,IDUA,IDSA,CA ) :: (solucoes( X,(ato( ID,_,_,X,_ ),nao( nulo( X ) )),S ),
                                                comprimento( S,L ),
                                                L == 0 )) ).
-insercaoInterdito( ato( ID,D,IDS,C ),custo ) :-
+inserirInterdito( ato( ID,D,IDS,C ),custo ) :-
     getIncXPTO( XPTO ),
     evolucao( ato( ID,D,IDU,IDS,XPTO ) ),
     evolucao( (excecao( ato( IDA,DA,IDUA,IDSA,CA ) ) :- ato( IDA,DA,IDUA,IDSA,XPTO )) ),
@@ -1081,6 +1082,7 @@ removeUtente( ID ) :-
     L > 0,
     removeAll( LUT ).
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removeCuidado: IDC -> {V,F}
 
@@ -1089,6 +1091,8 @@ removeCuidado( ID ) :-
     comprimento( LC,L ),
     L > 0,
     removeAll( LC).
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removeInst: D,I -> {V,F}
@@ -1099,6 +1103,8 @@ removeInst( D) :-
     L > 0,
     removeAll( LI).
 
+
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado removeCuidado: IDA -> {V,F}
 
@@ -1107,6 +1113,7 @@ removeAto( ID ) :-
     comprimento( LA,L ),
     L > 0,
     removeAll( LA).
+
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
@@ -1130,6 +1137,7 @@ naoExiste(ato(ID,D,IDC,IDS,C)):-
    	S == 0.
 
 
+
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado naoExisteNT: ID -> {V,F}
 
@@ -1149,6 +1157,8 @@ naoExisteNT(-ato(ID,D,IDC,IDS,C)):-
 	solucoes( ID, -ato(ID,DA,IDCA,IDSA,CA), L),
     comprimento( L,S ),
    	S < 2.
+
+
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
 % Extensao do predicado existeE: ID -> {V,F}
@@ -1180,4 +1190,3 @@ existeE(ato(ID,data( D,M,A ),IDU,IDS,C)) :-
 existeE(ato(ID,D,IDU,IDS,C)) :-
 	solucoes( (excecao( ato(ID,DA,IDA,IDSA,CA))),(excecao(ato(ID,DA,IDA,IDSA,CA))),LEXC ),
     comprimento(LEXC,S), S > 0.
-
