@@ -146,7 +146,7 @@ nulo( xpto002 ).
     nao( utente( IDU,N,I,M ) ),
     nao( excecao( utente( IDU,N,I,M ) ) ).
 
-% Garantir a consistênica de conhecimento: o Utente removido não pode ter atos associados
+% O Utente a remover não pode ter atos associados
 
 -utente( ID,N,I,M ) :: ( solucoes( ID,ato( _,_,ID,_,_ ),S ),
                          comprimento( S,L ), 
@@ -155,8 +155,8 @@ nulo( xpto002 ).
 
 
 %--------------------------------- - - - - - - - - - -  -  -  -  -   -
-% Extensao do predicado cuidado prestado: 
-% IdServ, Descrição, Instituição -> {V,F,D}
+% Extensao do predicado cuidado:
+$ IdServ, Descrição, Instituicao -> {V,F,D}
 
 % ------- Conhecimento Perfeito Positivo -------%
 
@@ -188,7 +188,7 @@ cuidado( 11,pediatria,xpto003 ).
 excecao( cuidado( IdS,D,I ) ) :-
     cuidado( IdS,D,xpto003 ).
 
-%%  É desconhecida a descricão do cuidado com o IdServ 11 ,
+%%  É desconhecida a descricão do cuidado com o IdServ 12 ,
 %%  prestado no hsjoao no porto.
 
 cuidado( 12,xpto004,instituicao( hsjoao,porto )).
