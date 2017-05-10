@@ -1,23 +1,27 @@
 library(neuralnet)
 library(hydroGOF)
-dados <- read.csv("C:/Users/Diogo/OneDrive/Universidade/3? Ano/2? Semestre/SRCR/TP1/SRCR-1617/Exerc?cio 3/exaustao_aleatorio.csv", header= TRUE, sep = ';', dec = ',' )
+dados <- read.csv("~/OneDrive/Documentos/MiEI/3.º ano/2.º semestre/Sistemas de Representação de Conhecimento e Raciocínio/Trabalhos práticos/SRCR-1617/Exercício 3/exaustao_FatigueLevel_7.csv", header= TRUE, sep = ';', dec = ',' )
 treino <- dados[1:559,]
 teste <- dados[559:844,]
-formula01 <- FatigueLevel ~ Performance.KDTMean + Performance.MAMean + Performance.DDCMean
+formula01 <- FatigueLevel ~ Performance.Task + Performance.MAMean + Performance.MVMean + Performance.DDCMean
+rna <- neuralnet(formula01, treino, hidden = c(5,4,3,3), threshold = 0.01, stepmax = 1e+08, lifesign = "full")
+teste.01 <- subset(teste,select = c("Performance.Task","Performance.MAMean","Performance.MVMean", "Performance.DDCMean"))
+rna.resultados <- compute(rna, teste.01)
+resultados <- data.frame(atual = teste$FatigueLevel, previsao = rna.resultados$net.result)
+resultados$previsao <- round(resultados$previsao, digits = 0)
+out <- print(rmse(c(teste$FatigueLevel),c(resultados$previsao)))
 
-i <- 3
-while(i >= 1) {
-  j <- i
-  while(j >= 1) {
-    rna <- neuralnet(formula01, treino, hidden = c(i,j), threshold = 0.01, stepmax = 1e+06)
-    teste.01 <- subset(teste,select = c("Performance.KDTMean","Performance.MAMean","Performance.DDCMean"))
-    rna.resultados <- compute(rna, teste.01)
-    resultados <- data.frame(atual = teste$FatigueLevel, previsao = rna.resultados$net.result)
-    resultados$previsao <- round(resultados$previsao, digits = 0)
-    out <- paste("Número de nodos:", i, j, "| RMSE:", rmse(c(teste$FatigueLevel),c(resultados$previsao)), sep = " ")
-    print(out)
-    plot(rna)
-    j <- j - 1
-  }
-  i <- i - 1
-}
+
+
+library(neuralnet)
+library(hydroGOF)
+dados <- read.csv("~/OneDrive/Documentos/MiEI/3.º ano/2.º semestre/Sistemas de Representação de Conhecimento e Raciocínio/Trabalhos práticos/SRCR-1617/Exercício 3/exaustao_FatigueLevel_2.csv", header= TRUE, sep = ';', dec = ',' )
+treino <- dados[1:559,]
+teste <- dados[559:844,]
+formula01 <- FatigueLevel ~ Performance.Task + Performance.KDTMean + Performance.ADMSLMean + Performance.DMSMean
+rna <- neuralnet(formula01, treino, hidden = c(6,5,4), threshold = 0.01, stepmax = 1e+08, lifesign = "full")
+teste.01 <- subset(teste,select = c("Performance.Task","Performance.KDTMean","Performance.ADMSLMean", "Performance.DMSMean"))
+rna.resultados <- compute(rna, teste.01)
+resultados <- data.frame(atual = teste$FatigueLevel, previsao = rna.resultados$net.result)
+resultados$previsao <- round(resultados$previsao, digits = 0)
+out <- print(rmse(c(teste$FatigueLevel),c(resultados$previsao)))
