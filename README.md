@@ -1,2 +1,2 @@
 # SRCR-1617
-Exercícios prático da UC Sistemas de Representação de Conhecimento e Raciocínio (MiEI)
+Exercícios práticos realizados no âmbito da UC Sistemas de Representação de Conhecimento e Raciocínio do Mestrado Integrado em Engenharia Informática
